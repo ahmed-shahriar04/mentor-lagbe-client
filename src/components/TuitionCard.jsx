@@ -12,8 +12,8 @@ export default function TuitionCard({ tuition, index = 0 }) {
   // Stagger calculation: (index % 3) * 0.15s ensures each card in a 3-column grid fades in one-by-one!
   const delay = (index % 3) * 0.15;
 
-  // Real mentor image only
-  const tutorAvatar = tuition.tutorImage || tuition.tutorPhoto || (tuition.tutor && tuition.tutor.image);
+  // Real mentor image only (falls back cleanly to initials avatar)
+  const tutorAvatar = tuition.tutorImage || null;
 
   return (
     <motion.div
@@ -72,6 +72,16 @@ export default function TuitionCard({ tuition, index = 0 }) {
               {tuition.daysPerWeek} days/wk
             </span>
           </div>
+
+          {/* Preferred Class Time Shift */}
+          {tuition.classTime && (
+            <div className="flex items-center text-[11px] text-emerald-700 font-medium mb-2 bg-emerald-50/60 px-2.5 py-1 rounded-lg w-fit border border-emerald-100">
+              <svg className="w-3 h-3 mr-1 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+              </svg>
+              <span className="truncate">{tuition.classTime}</span>
+            </div>
+          )}
 
           {/* Title */}
           <h3 className="text-base font-bold text-slate-900 font-heading line-clamp-2 group-hover:text-emerald-600 transition-colors">

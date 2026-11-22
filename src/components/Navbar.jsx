@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { getStoredAuth, clearStoredAuth } from '@/lib/auth-client';
@@ -26,6 +26,25 @@ export default function Navbar() {
   const [user, setUser] = useState(null);
   const [menuOpen, setMenuOpen] = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
+  const timeoutRef = useRef(null);
+
+  const handleMouseEnter = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    setDropdownOpen(true);
+  };
+
+  const handleMouseLeave = () => {
+    if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    timeoutRef.current = setTimeout(() => {
+      setDropdownOpen(false);
+    }, 250);
+  };
+
+  useEffect(() => {
+    return () => {
+      if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    };
+  }, []);
 
   useEffect(() => {
     const syncAuth = () => {
@@ -51,7 +70,7 @@ export default function Navbar() {
     { name: 'Home', href: '/' },
     { name: 'Browse Tuitions', href: '/tuitions' },
     { name: 'Pricing / Pro Plans', href: '/pricing' },
-    { name: 'How It Works', href: '/#how-it-works' },
+    { name: 'How It Works', href: '/how-it-works' },
   ];
 
   const getDashboardHref = () => {
@@ -141,8 +160,8 @@ export default function Navbar() {
               /* When Logged In: Profile Picture + Hover Arrow Dropdown (Dashboard, Profile, Logout) */
               <div
                 className="relative"
-                onMouseEnter={() => setDropdownOpen(true)}
-                onMouseLeave={() => setDropdownOpen(false)}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
               >
                 <div
                   onClick={() => setDropdownOpen(!dropdownOpen)}
@@ -177,85 +196,91 @@ export default function Navbar() {
                   />
                 </div>
 
-                {/* Dropdown Menu on Hover / Click */}
+                {/* Dropdown Menu on Hover / Click with Seamless Bridge (zero gap) */}
                 {dropdownOpen && (
-                  <div className="absolute right-0 top-full mt-1.5 w-60 bg-white rounded-2xl shadow-xl border border-slate-200 py-2 z-50 animate-fade-in">
-                    {/* User Profile Header */}
-                    <div className="px-4 py-3 border-b border-slate-100">
-                      <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
-                      <p className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</p>
-                      <div className="mt-2 flex items-center space-x-1.5">
-                        <span
-                          className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
-                            user.role === 'admin'
-                              ? 'bg-purple-100 text-purple-700'
-                              : user.role === 'tutor'
-                              ? 'bg-blue-100 text-blue-700'
-                              : 'bg-emerald-100 text-emerald-700'
-                          }`}
-                        >
-                          {user.role}
-                        </span>
-                        {user.plan === 'pro' && (
-                          <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200 flex items-center space-x-1">
-                            <img src="/pro-badge.svg" alt="Pro" className="w-3 h-3 inline" />
-                            <span>PRO</span>
+                  <div
+                    onMouseEnter={handleMouseEnter}
+                    onMouseLeave={handleMouseLeave}
+                    className="absolute right-0 top-full pt-1.5 w-60 z-50 animate-fade-in"
+                  >
+                    <div className="bg-white rounded-2xl shadow-2xl border border-slate-200 py-2">
+                      {/* User Profile Header */}
+                      <div className="px-4 py-3 border-b border-slate-100">
+                        <p className="text-xs font-bold text-slate-900 truncate">{user.name}</p>
+                        <p className="text-[11px] text-slate-500 truncate mt-0.5">{user.email}</p>
+                        <div className="mt-2 flex items-center space-x-1.5">
+                          <span
+                            className={`text-[10px] font-bold px-2 py-0.5 rounded uppercase ${
+                              user.role === 'admin'
+                                ? 'bg-purple-100 text-purple-700'
+                                : user.role === 'tutor'
+                                ? 'bg-blue-100 text-blue-700'
+                                : 'bg-emerald-100 text-emerald-700'
+                            }`}
+                          >
+                            {user.role}
                           </span>
+                          {user.plan === 'pro' && (
+                            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-600 border border-blue-200 flex items-center space-x-1">
+                              <img src="/pro-badge.svg" alt="Pro" className="w-3 h-3 inline" />
+                              <span>PRO</span>
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Navigation Items */}
+                      <div className="py-1">
+                        <Link
+                          href={getDashboardHref()}
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition"
+                        >
+                          <FontAwesomeIcon
+                            icon={user.role === 'admin' ? faShieldAlt : faChartLine}
+                            className="w-3.5 h-3.5 text-slate-400"
+                          />
+                          <span>
+                            {user.role === 'admin'
+                              ? 'Admin Panel'
+                              : user.role === 'tutor'
+                              ? 'Tutor Dashboard'
+                              : 'Student Dashboard'}
+                          </span>
+                        </Link>
+
+                        <Link
+                          href="/dashboard/profile"
+                          onClick={() => setDropdownOpen(false)}
+                          className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition"
+                        >
+                          <FontAwesomeIcon icon={faUser} className="w-3.5 h-3.5 text-slate-400" />
+                          <span>My Profile</span>
+                        </Link>
+
+                        {user.plan !== 'pro' && (
+                          <Link
+                            href="/pricing"
+                            onClick={() => setDropdownOpen(false)}
+                            className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-50/60 transition"
+                          >
+                            <FontAwesomeIcon icon={faCrown} className="w-3.5 h-3.5 text-amber-500" />
+                            <span>Upgrade to Pro</span>
+                          </Link>
                         )}
                       </div>
-                    </div>
 
-                    {/* Navigation Items */}
-                    <div className="py-1">
-                      <Link
-                        href={getDashboardHref()}
-                        onClick={() => setDropdownOpen(false)}
-                        className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition"
-                      >
-                        <FontAwesomeIcon
-                          icon={user.role === 'admin' ? faShieldAlt : faChartLine}
-                          className="w-3.5 h-3.5 text-slate-400"
-                        />
-                        <span>
-                          {user.role === 'admin'
-                            ? 'Admin Panel'
-                            : user.role === 'tutor'
-                            ? 'Tutor Dashboard'
-                            : 'Student Dashboard'}
-                        </span>
-                      </Link>
-
-                      <Link
-                        href="/dashboard/profile"
-                        onClick={() => setDropdownOpen(false)}
-                        className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-slate-700 hover:text-emerald-700 hover:bg-emerald-50/60 transition"
-                      >
-                        <FontAwesomeIcon icon={faUser} className="w-3.5 h-3.5 text-slate-400" />
-                        <span>My Profile</span>
-                      </Link>
-
-                      {user.plan !== 'pro' && (
-                        <Link
-                          href="/pricing"
-                          onClick={() => setDropdownOpen(false)}
-                          className="flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-amber-600 hover:bg-amber-50/60 transition"
+                      {/* Sign Out Button */}
+                      <div className="border-t border-slate-100 pt-1 mt-1">
+                        <button
+                          type="button"
+                          onClick={handleSignOut}
+                          className="w-full flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition text-left cursor-pointer"
                         >
-                          <FontAwesomeIcon icon={faCrown} className="w-3.5 h-3.5 text-amber-500" />
-                          <span>Upgrade to Pro</span>
-                        </Link>
-                      )}
-                    </div>
-
-                    {/* Sign Out Button */}
-                    <div className="border-t border-slate-100 pt-1 mt-1">
-                      <button
-                        type="button"
-                        onClick={handleSignOut}
-                        className="w-full flex items-center space-x-2.5 px-4 py-2 text-xs font-semibold text-red-600 hover:bg-red-50 transition text-left"
-                      >
-                        <FontAwesomeIcon icon={faSignOutAlt} className="w-3.5 h-3.5 text-red-500" />
-                        <span>Sign Out</span>
-                      </button>
+                          <FontAwesomeIcon icon={faSignOutAlt} className="w-3.5 h-3.5 text-red-500" />
+                          <span>Sign Out</span>
+                        </button>
+                      </div>
                     </div>
                   </div>
                 )}

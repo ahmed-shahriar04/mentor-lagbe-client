@@ -193,7 +193,7 @@ export default function TuitionDetailsPage() {
                 </h1>
 
                 {/* Details highlights */}
-                <div className="mt-6 grid grid-cols-2 sm:grid-cols-3 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs">
+                <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 p-4 rounded-2xl bg-slate-50 border border-slate-100 text-xs">
                   <div>
                     <p className="text-slate-400">Class Mode</p>
                     <p className="font-bold text-slate-800 mt-0.5">{tuition.mode}</p>
@@ -201,6 +201,10 @@ export default function TuitionDetailsPage() {
                   <div>
                     <p className="text-slate-400">Days Per Week</p>
                     <p className="font-bold text-slate-800 mt-0.5">{tuition.daysPerWeek} Days / Week</p>
+                  </div>
+                  <div>
+                    <p className="text-slate-400">Preferred Shift</p>
+                    <p className="font-bold text-emerald-700 mt-0.5 truncate">{tuition.classTime || 'Flexible Shift'}</p>
                   </div>
                   <div>
                     <p className="text-slate-400">Location / Platform</p>

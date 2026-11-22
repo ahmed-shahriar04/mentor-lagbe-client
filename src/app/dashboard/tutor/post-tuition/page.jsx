@@ -16,6 +16,7 @@ export default function PostTuitionPage() {
   const [location, setLocation] = useState('');
   const [monthlyFee, setMonthlyFee] = useState('');
   const [daysPerWeek, setDaysPerWeek] = useState('3');
+  const [classTime, setClassTime] = useState('Evening (6:00 PM - 7:30 PM)');
   const [description, setDescription] = useState('');
   const [bannerImage, setBannerImage] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -51,6 +52,7 @@ export default function PostTuitionPage() {
         location: location || (mode === 'Online' ? 'Online' : 'Location Not Specified'),
         monthlyFee: parseFloat(monthlyFee),
         daysPerWeek: parseInt(daysPerWeek, 10),
+        classTime: classTime || 'Evening (6:00 PM - 7:30 PM)',
         description,
         bannerImage: bannerImage || 'https://images.unsplash.com/photo-1509062522246-3755977927d7?q=80&w=800&auto=format&fit=crop',
       };
@@ -138,7 +140,7 @@ export default function PostTuitionPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">Mode *</label>
             <select
@@ -175,6 +177,22 @@ export default function PostTuitionPage() {
               onChange={(e) => setDaysPerWeek(e.target.value)}
               className="w-full px-4 py-2 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
             />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Class Time Slot / Shift *</label>
+            <select
+              value={classTime}
+              onChange={(e) => setClassTime(e.target.value)}
+              className="w-full px-3 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs focus:ring-emerald-500 focus:border-emerald-500"
+            >
+              <option value="Evening (6:00 PM - 7:30 PM)">Evening (6:00 PM - 7:30 PM)</option>
+              <option value="Morning (8:00 AM - 10:00 AM)">Morning (8:00 AM - 10:00 AM)</option>
+              <option value="Afternoon (3:00 PM - 5:00 PM)">Afternoon (3:00 PM - 5:00 PM)</option>
+              <option value="Night (8:00 PM - 9:30 PM)">Night (8:00 PM - 9:30 PM)</option>
+              <option value="Weekend (10:00 AM - 12:00 PM)">Weekend (10:00 AM - 12:00 PM)</option>
+              <option value="Flexible / Negotiable">Flexible / Negotiable</option>
+            </select>
           </div>
         </div>
 

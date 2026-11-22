@@ -84,7 +84,7 @@ export default function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/#how-it-works" className="hover:text-emerald-400 transition">
+                <Link href="/how-it-works" className="hover:text-emerald-400 transition">
                   How It Works
                 </Link>
               </li>

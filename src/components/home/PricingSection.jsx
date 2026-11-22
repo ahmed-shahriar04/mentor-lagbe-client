@@ -78,8 +78,11 @@ export default function PricingSection() {
             viewport={{ once: true, margin: '-40px' }}
             transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
-            className="p-8 rounded-3xl bg-white border border-slate-200 shadow-md flex flex-col justify-between"
+            className="p-8 rounded-3xl bg-white border-2 border-blue-500 shadow-xl shadow-blue-500/10 flex flex-col justify-between relative overflow-hidden"
           >
+            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-bl-xl uppercase tracking-wider">
+              STUDENT RECOMMENDED
+            </div>
             <div>
               <span className="text-xs font-bold text-blue-700 uppercase tracking-wider font-heading">
                 For Students
@@ -98,15 +101,15 @@ export default function PricingSection() {
               <ul className="mt-6 space-y-3 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <li className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  <strong>Unlimited</strong> tuition bookmarks
+                  <span><strong>Unlimited</strong> tuition bookmarks</span>
                 </li>
                 <li className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Priority booking queue on limited batches
+                  <span>Priority booking queue on limited batches</span>
                 </li>
                 <li className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Verified Student Pro status
+                  <span>Verified Student Pro status</span>
                 </li>
               </ul>
             </div>
@@ -114,7 +117,7 @@ export default function PricingSection() {
             <div className="mt-8">
               <Link
                 href="/pricing"
-                className="w-full block text-center py-3 px-4 text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
+                className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/25 transition"
               >
                 Upgrade Student ($10)
               </Link>
@@ -130,8 +133,8 @@ export default function PricingSection() {
             whileHover={{ y: -6, transition: { duration: 0.2 } }}
             className="p-8 rounded-3xl bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 flex flex-col justify-between relative overflow-hidden"
           >
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-xl uppercase tracking-wider">
-              Most Popular
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-bl-xl uppercase tracking-wider">
+              VERIFIED MENTOR TIER
             </div>
             <div>
               <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider font-heading">
@@ -151,15 +154,15 @@ export default function PricingSection() {
               <ul className="mt-6 space-y-3 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <li className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  <strong>Unlimited</strong> tuition batch postings
+                  <span><strong>Unlimited</strong> tuition batch postings</span>
                 </li>
                 <li className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Verified Pro Tutor Badge next to your profile
+                  <span>Verified Pro Tutor Badge next to your profile</span>
                 </li>
                 <li className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Direct student applicant management
+                  <span>Direct student applicant management</span>
                 </li>
               </ul>
             </div>
@@ -167,7 +170,7 @@ export default function PricingSection() {
             <div className="mt-8">
               <Link
                 href="/pricing"
-                className="w-full block text-center py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
+                className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
               >
                 Upgrade Tutor ($15)
               </Link>

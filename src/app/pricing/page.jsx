@@ -114,7 +114,10 @@ export default function PricingPage() {
           </div>
 
           {/* Card 2: Pro Student Plan */}
-          <div className="bg-white rounded-3xl p-8 border border-slate-200 shadow-md flex flex-col justify-between hover:shadow-xl transition relative">
+          <div className="bg-white rounded-3xl p-8 border-2 border-blue-500 shadow-xl shadow-blue-500/10 flex flex-col justify-between hover:shadow-2xl transition relative overflow-hidden">
+            <div className="absolute top-0 right-0 bg-blue-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-bl-xl uppercase tracking-wider">
+              STUDENT RECOMMENDED
+            </div>
             <div>
               <span className="text-xs font-bold text-blue-600 uppercase tracking-wider font-heading">
                 For Students
@@ -131,23 +134,23 @@ export default function PricingPage() {
               <div className="mt-8 space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <div className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  <strong>Unlimited Bookmarks</strong> (No 5-item limit)
+                  <span><strong>Unlimited Bookmarks</strong> (No 5-item limit)</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Priority application review queue
+                  <span>Priority application review queue</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Direct contact information access
+                  <span>Direct contact information access</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Verified Student Pro Status Badge
+                  <span>Verified Student Pro Status Badge</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-blue-600 font-bold mr-2">✓</span>
-                  Early notification for new matching batches
+                  <span>Early notification for new matching batches</span>
                 </div>
               </div>
             </div>
@@ -156,7 +159,7 @@ export default function PricingPage() {
               <button
                 onClick={() => handleUpgrade('student')}
                 disabled={loadingRole !== null}
-                className="w-full py-3.5 px-4 text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition shadow-sm disabled:opacity-50"
+                className="w-full py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md shadow-blue-500/25 disabled:opacity-50 cursor-pointer"
               >
                 {loadingRole === 'student' ? 'Connecting to Stripe...' : 'Upgrade Student ($10)'}
               </button>
@@ -165,8 +168,8 @@ export default function PricingPage() {
 
           {/* Card 3: Pro Tutor Plan (Featured) */}
           <div className="bg-white rounded-3xl p-8 border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 flex flex-col justify-between relative overflow-hidden transform lg:-translate-y-2">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-xl uppercase tracking-wider">
-              Most Popular
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[10px] font-extrabold px-3.5 py-1 rounded-bl-xl uppercase tracking-wider">
+              VERIFIED MENTOR TIER
             </div>
             <div>
               <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider font-heading">
@@ -184,23 +187,23 @@ export default function PricingPage() {
               <div className="mt-8 space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <div className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  <strong>Unlimited Tuition Posts</strong> (No 2-post limit)
+                  <span><strong>Unlimited Tuition Posts</strong> (No 2-post limit)</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Verified Pro Tutor Badge on all cards
+                  <span>Verified Pro Tutor Badge on all cards</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Direct applicant review & management
+                  <span>Direct applicant review & management</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Priority featured placement on Browse Tuitions
+                  <span>Priority featured placement on Browse Tuitions</span>
                 </div>
                 <div className="flex items-center">
                   <span className="text-emerald-600 font-bold mr-2">✓</span>
-                  Full student reviews & ratings access
+                  <span>Full student reviews & ratings access</span>
                 </div>
               </div>
             </div>
@@ -209,10 +212,12 @@ export default function PricingPage() {
               <button
                 onClick={() => handleUpgrade('tutor')}
                 disabled={loadingRole !== null}
-                className="w-full py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/30 transition disabled:opacity-50"
+                className="w-full py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/30 transition disabled:opacity-50 cursor-pointer"
               >
                 {loadingRole === 'tutor' ? 'Connecting to Stripe...' : 'Upgrade Pro Tutor ($15)'}
               </button>
+            </div>
+          </div>
             </div>
           </div>
 

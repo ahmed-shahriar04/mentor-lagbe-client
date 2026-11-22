@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import TuitionCard from '@/components/TuitionCard';
 import { TuitionCardSkeleton } from '@/components/SkeletonLoader';
+import CustomDropdown from '@/components/CustomDropdown';
 import { api } from '@/lib/api';
 
 export default function BrowseTuitionsPage() {
@@ -70,6 +71,42 @@ export default function BrowseTuitionsPage() {
     { label: 'ICT & Coding', value: 'ICT & Programming' },
   ];
 
+  const subjectOptions = [
+    { value: 'all', label: 'All Subjects' },
+    { value: 'Higher Mathematics', label: 'Higher Mathematics' },
+    { value: 'Physics', label: 'Physics' },
+    { value: 'Chemistry', label: 'Chemistry' },
+    { value: 'Biology', label: 'Biology' },
+    { value: 'English', label: 'English' },
+    { value: 'IELTS', label: 'IELTS' },
+    { value: 'ICT & Programming', label: 'ICT & Programming' },
+    { value: 'Accounting', label: 'Accounting' },
+    { value: 'General Science & Math', label: 'General Science & Math' },
+    { value: 'Medical Admission', label: 'Medical Admission' },
+  ];
+
+  const classLevelOptions = [
+    { value: 'all', label: 'All Class Levels' },
+    { value: 'Class 9 / 10', label: 'Class 9 / 10' },
+    { value: 'Class 10 / SSC', label: 'Class 10 / SSC' },
+    { value: 'Class 11 & 12', label: 'Class 11 & 12' },
+    { value: 'Class 12 / HSC', label: 'Class 12 / HSC' },
+    { value: 'Admission Aspirants', label: 'Admission Aspirants' },
+    { value: 'University / Job Candidates', label: 'University / Job' },
+  ];
+
+  const modeOptions = [
+    { value: 'all', label: 'All Modes (Online & Offline)' },
+    { value: 'Online', label: 'Online Classes Only' },
+    { value: 'Offline', label: 'Offline / In-Person Visit' },
+  ];
+
+  const sortOptions = [
+    { value: 'newest', label: 'Recently Published First' },
+    { value: 'fee_low_high', label: 'Monthly Fee: Low to High' },
+    { value: 'fee_high_low', label: 'Monthly Fee: High to Low' },
+  ];
+
   const hasActiveFilters = subject !== 'all' || classLevel !== 'all' || mode !== 'all' || sortBy !== 'newest' || search !== '';
 
   return (
@@ -134,7 +171,7 @@ export default function BrowseTuitionsPage() {
               </button>
             </div>
 
-            {/* Filter Dropdowns 4-Column Grid with Custom Sleek Styling */}
+            {/* Filter Dropdowns 4-Column Grid with Custom Sleek Styling (Replaces OS native select) */}
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 pt-4 border-t border-slate-100">
               
               {/* 1. Subject Dropdown */}
@@ -145,30 +182,11 @@ export default function BrowseTuitionsPage() {
                   </svg>
                   Subject
                 </label>
-                <div className="relative">
-                  <select
-                    value={subject}
-                    onChange={(e) => { setSubject(e.target.value); setPage(1); }}
-                    className={`w-full appearance-none px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition cursor-pointer pr-8 ${
-                      subject !== 'all' ? 'border-emerald-500 bg-emerald-50/40 text-emerald-900 font-bold' : 'border-slate-200 text-slate-700'
-                    }`}
-                  >
-                    <option value="all">All Subjects</option>
-                    <option value="Higher Mathematics">Higher Mathematics</option>
-                    <option value="Physics">Physics</option>
-                    <option value="Chemistry">Chemistry</option>
-                    <option value="Biology">Biology</option>
-                    <option value="English">English</option>
-                    <option value="IELTS">IELTS</option>
-                    <option value="ICT & Programming">ICT & Programming</option>
-                    <option value="Accounting">Accounting</option>
-                    <option value="General Science & Math">General Science & Math</option>
-                    <option value="Medical Admission">Medical Admission</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                </div>
+                <CustomDropdown
+                  value={subject}
+                  options={subjectOptions}
+                  onChange={(val) => { setSubject(val); setPage(1); }}
+                />
               </div>
 
               {/* 2. Class Level Dropdown */}
@@ -179,26 +197,11 @@ export default function BrowseTuitionsPage() {
                   </svg>
                   Class Level
                 </label>
-                <div className="relative">
-                  <select
-                    value={classLevel}
-                    onChange={(e) => { setClassLevel(e.target.value); setPage(1); }}
-                    className={`w-full appearance-none px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition cursor-pointer pr-8 ${
-                      classLevel !== 'all' ? 'border-emerald-500 bg-emerald-50/40 text-emerald-900 font-bold' : 'border-slate-200 text-slate-700'
-                    }`}
-                  >
-                    <option value="all">All Class Levels</option>
-                    <option value="Class 9 / 10">Class 9 / 10</option>
-                    <option value="Class 10 / SSC">Class 10 / SSC</option>
-                    <option value="Class 11 & 12">Class 11 & 12</option>
-                    <option value="Class 12 / HSC">Class 12 / HSC</option>
-                    <option value="Admission Aspirants">Admission Aspirants</option>
-                    <option value="University / Job Candidates">University / Job</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                </div>
+                <CustomDropdown
+                  value={classLevel}
+                  options={classLevelOptions}
+                  onChange={(val) => { setClassLevel(val); setPage(1); }}
+                />
               </div>
 
               {/* 3. Class Mode Dropdown */}
@@ -209,22 +212,11 @@ export default function BrowseTuitionsPage() {
                   </svg>
                   Class Mode
                 </label>
-                <div className="relative">
-                  <select
-                    value={mode}
-                    onChange={(e) => { setMode(e.target.value); setPage(1); }}
-                    className={`w-full appearance-none px-3.5 py-2.5 bg-slate-50 border rounded-xl text-xs font-semibold focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition cursor-pointer pr-8 ${
-                      mode !== 'all' ? 'border-emerald-500 bg-emerald-50/40 text-emerald-900 font-bold' : 'border-slate-200 text-slate-700'
-                    }`}
-                  >
-                    <option value="all">All Modes (Online & Offline)</option>
-                    <option value="Online">Online Classes Only</option>
-                    <option value="Offline">Offline / In-Person Visit</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                </div>
+                <CustomDropdown
+                  value={mode}
+                  options={modeOptions}
+                  onChange={(val) => { setMode(val); setPage(1); }}
+                />
               </div>
 
               {/* 4. Sort By Fee Dropdown */}
@@ -235,20 +227,11 @@ export default function BrowseTuitionsPage() {
                   </svg>
                   Sort By Fee
                 </label>
-                <div className="relative">
-                  <select
-                    value={sortBy}
-                    onChange={(e) => { setSortBy(e.target.value); setPage(1); }}
-                    className="w-full appearance-none px-3.5 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-xs font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 transition cursor-pointer pr-8"
-                  >
-                    <option value="newest">Recently Published First</option>
-                    <option value="fee_low_high">Monthly Fee: Low to High</option>
-                    <option value="fee_high_low">Monthly Fee: High to Low</option>
-                  </select>
-                  <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2.5 text-slate-400">
-                    <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M19 9l-7 7-7-7" /></svg>
-                  </div>
-                </div>
+                <CustomDropdown
+                  value={sortBy}
+                  options={sortOptions}
+                  onChange={(val) => { setSortBy(val); setPage(1); }}
+                />
               </div>
 
             </div>
