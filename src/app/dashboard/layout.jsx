@@ -181,16 +181,29 @@ export default function DashboardLayout({ children }) {
                 </Link>
               );
             })}
+
+            {/* Quick Sign Out in Sidebar Menu */}
+            <div className="pt-2 border-t border-slate-100">
+              <button
+                type="button"
+                onClick={handleSignOut}
+                className="w-full flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 hover:text-red-700 transition text-left"
+              >
+                <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 shrink-0 text-red-500" />
+                <span>Sign Out</span>
+              </button>
+            </div>
           </nav>
         </div>
 
-        {/* Sidebar Bottom: Sign Out */}
-        <div className="p-4 border-t border-slate-100">
+        {/* Sidebar Bottom: Highlighted Sign Out Button */}
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
           <button
+            type="button"
             onClick={handleSignOut}
-            className="w-full flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition text-left"
+            className="w-full flex items-center justify-center px-4 py-2.5 rounded-xl text-xs font-bold text-red-600 bg-red-50 hover:bg-red-100 border border-red-200 shadow-sm transition"
           >
-            <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 text-red-500" />
+            <FontAwesomeIcon icon={faSignOutAlt} className="w-3.5 h-3.5 mr-2.5 text-red-500" />
             <span>Sign Out</span>
           </button>
         </div>

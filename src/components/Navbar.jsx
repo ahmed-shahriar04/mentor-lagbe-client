@@ -131,7 +131,7 @@ export default function Navbar() {
                 </Link>
               </div>
             ) : (
-              /* When Logged In: Only User Profile Image (Clicks directly to Profile Page) */
+              /* When Logged In: Only User Profile Image (Clicks directly to Profile Page) + PC Sign Out */
               <div className="flex items-center space-x-2">
                 <Link
                   href="/dashboard/profile"
@@ -149,6 +149,17 @@ export default function Navbar() {
                     </span>
                   )}
                 </Link>
+
+                {/* PC ONLY: Sign Out icon button right beside profile avatar */}
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  title="Sign Out"
+                  aria-label="Sign Out"
+                  className="hidden md:flex items-center justify-center w-9 h-9 rounded-xl border border-slate-200 text-slate-500 hover:text-red-600 hover:bg-red-50 hover:border-red-200 transition shadow-sm ml-1"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4" />
+                </button>
               </div>
             )}
           </div>
@@ -227,13 +238,17 @@ export default function Navbar() {
                 <FontAwesomeIcon icon={faUser} className="w-4 h-4 mr-3 text-slate-400" />
                 <span>Update Profile</span>
               </Link>
-              <button
-                onClick={handleSignOut}
-                className="w-full flex items-center px-3 py-2 text-sm font-semibold text-red-600 hover:bg-red-50 rounded-xl text-left"
-              >
-                <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 text-red-500" />
-                <span>Sign Out</span>
-              </button>
+              {/* Mobile Drawer Sign Out Button */}
+              <div className="pt-2">
+                <button
+                  type="button"
+                  onClick={handleSignOut}
+                  className="w-full flex items-center px-4 py-2.5 text-sm font-bold text-red-600 bg-red-50 hover:bg-red-100/80 rounded-xl text-left border border-red-100 transition shadow-sm"
+                >
+                  <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 text-red-500" />
+                  <span>Sign Out</span>
+                </button>
+              </div>
             </div>
           ) : (
             <div className="pt-2 border-t border-slate-100 space-y-2">
