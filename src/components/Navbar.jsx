@@ -31,6 +31,9 @@ export default function Navbar() {
 
   const handleMouseEnter = () => {
     if (timeoutRef.current) clearTimeout(timeoutRef.current);
+    // Refresh user state from latest stored session whenever menu is opened
+    const auth = getStoredAuth();
+    if (auth?.user) setUser(auth.user);
     setDropdownOpen(true);
   };
 
@@ -65,6 +68,7 @@ export default function Navbar() {
             if (fresh.role !== auth.user?.role || fresh.plan !== auth.user?.plan) {
               const updated = { ...auth, user: { ...auth.user, ...fresh } };
               setStoredAuth(updated);
+              setUser(updated.user);
             }
           }
         })
@@ -72,7 +76,11 @@ export default function Navbar() {
     }
 
     window.addEventListener('mentorlagbe_auth_change', syncAuth);
-    return () => window.removeEventListener('mentorlagbe_auth_change', syncAuth);
+    window.addEventListener('storage', syncAuth);
+    return () => {
+      window.removeEventListener('mentorlagbe_auth_change', syncAuth);
+      window.removeEventListener('storage', syncAuth);
+    };
   }, []);
 
   const handleSignOut = () => {

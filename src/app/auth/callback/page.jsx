@@ -68,18 +68,35 @@ export default function GoogleOAuthCallback() {
           }
         }
 
-        const email = googleUser?.email || 'google_user@mentorlagbe.com';
+        const email = (googleUser?.email || 'google_user@mentorlagbe.com').trim().toLowerCase();
         const name = googleUser?.name || email.split('@')[0];
         const image = googleUser?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=059669&color=fff&bold=true`;
 
-        // Check selected role
-        const savedRole = sessionStorage.getItem('mentorlagbe_oauth_role') || 'student';
+        // Retrieve real, latest user role and profile from MongoDB
+        let role = sessionStorage.getItem('mentorlagbe_oauth_role') || 'student';
+        let plan = 'free';
+
+        try {
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          const loginRes = await fetch(`${apiUrl}/users/login`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email }),
+          });
+          const loginData = await loginRes.json();
+          if (loginData?.success && loginData?.user?.role) {
+            role = loginData.user.role;
+            plan = loginData.user.plan || 'free';
+          }
+        } catch (serverErr) {
+          console.warn('Could not query database role during Google login:', serverErr);
+        }
 
         const payload = {
           email,
           name,
-          role: savedRole,
-          plan: 'free',
+          role,
+          plan,
           iat: Math.floor(Date.now() / 1000),
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
         };
@@ -90,18 +107,20 @@ export default function GoogleOAuthCallback() {
           user: {
             name,
             email,
-            role: savedRole,
-            plan: 'free',
+            role,
+            plan,
             image,
           },
           token: googleToken,
         });
 
-        toast.success(`Welcome, ${name}! Signed in with Google.`);
+        toast.success(`Welcome, ${name}! Signed in as ${role.toUpperCase()}.`);
         setStatus('Success! Redirecting to your dashboard...');
 
         setTimeout(() => {
-          if (savedRole === 'tutor') {
+          if (role === 'admin') {
+            router.push('/dashboard/admin');
+          } else if (role === 'tutor') {
             router.push('/dashboard/tutor');
           } else {
             router.push('/dashboard/student');

@@ -64,9 +64,9 @@ export default function DashboardLayout({ children }) {
                 duration: 4000,
               });
               if (fresh.role === 'tutor' && pathname.includes('/dashboard/student')) {
-                router.push('/dashboard/tutor');
+                window.location.href = '/dashboard/tutor';
               } else if (fresh.role === 'student' && pathname.includes('/dashboard/tutor')) {
-                router.push('/dashboard/student');
+                window.location.href = '/dashboard/student';
               }
             }
           }
