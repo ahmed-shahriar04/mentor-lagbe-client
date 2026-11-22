@@ -31,12 +31,12 @@ export default function BrowseTuitionsPage() {
       if (mode !== 'all') params.mode = mode;
 
       const res = await api.getPublicTuitions(params);
-      if (res.success) {
+      if (res?.success) {
         setTuitions(res.data || []);
         setPagination(res.pagination || { total: 0, totalPages: 1 });
       }
     } catch (err) {
-      console.error('Failed to load tuitions:', err);
+      console.warn('Tuitions loading notice:', err?.message);
     } finally {
       setLoading(false);
     }

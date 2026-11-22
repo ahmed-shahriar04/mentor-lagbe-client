@@ -35,6 +35,11 @@ export async function fetchApi(endpoint, options = {}) {
 
     return data;
   } catch (error) {
+    if (error.name === 'TypeError' && error.message.includes('fetch')) {
+      const netError = new Error(`Cannot connect to backend server at ${API_BASE}. Please make sure your server is running.`);
+      netError.isNetworkError = true;
+      throw netError;
+    }
     throw error;
   }
 }

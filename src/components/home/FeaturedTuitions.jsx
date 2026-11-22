@@ -14,11 +14,11 @@ export default function FeaturedTuitions() {
     async function loadFeatured() {
       try {
         const res = await api.getFeaturedTuitions();
-        if (res.success && res.data) {
+        if (res?.success && res?.data) {
           setTuitions(res.data);
         }
       } catch (err) {
-        console.error('Failed to load featured tuitions:', err);
+        console.warn('Featured tuitions connection notice:', err?.message);
       } finally {
         setLoading(false);
       }

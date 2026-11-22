@@ -13,7 +13,8 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased">
         <Toaster
-          position="bottom-right"
+          position="top-right"
+          containerClassName="z-[99999]"
           toastOptions={{
             duration: 4000,
             style: {
@@ -21,6 +22,7 @@ export default function RootLayout({ children }) {
               color: '#fff',
               fontSize: '14px',
               borderRadius: '12px',
+              boxShadow: '0 10px 25px -5px rgba(0, 0, 0, 0.3)',
             },
           }}
         />

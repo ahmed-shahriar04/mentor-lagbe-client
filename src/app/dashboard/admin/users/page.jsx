@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
+import { getStoredAuth, setStoredAuth } from '@/lib/auth-client';
 
 export default function AdminUsersPage() {
   const [users, setUsers] = useState([]);
@@ -24,11 +25,30 @@ export default function AdminUsersPage() {
   }, []);
 
   const handleRoleChange = async (userId, newRole) => {
+    // 1. Optimistic UI update so the select value and badges change instantaneously
+    const prevUsers = [...users];
+    setUsers((prev) =>
+      prev.map((u) => (u._id === userId ? { ...u, role: newRole } : u))
+    );
+
     try {
-      await api.updateUserRole(userId, newRole);
-      toast.success(`User role updated to ${newRole}`);
-      loadUsers();
+      const res = await api.updateUserRole(userId, newRole);
+      toast.success(res?.message || `User role updated to ${newRole.toUpperCase()} successfully!`, {
+        duration: 3500,
+      });
+
+      // If current logged in admin updated their own role, synchronize local storage auth session
+      const auth = getStoredAuth();
+      const targetUser = prevUsers.find((u) => u._id === userId);
+      if (auth?.user && (auth.user._id === userId || auth.user.email === targetUser?.email)) {
+        auth.user.role = newRole;
+        setStoredAuth(auth);
+      }
+
+      // Re-fetch to ensure database state is completely synced
+      await loadUsers();
     } catch (err) {
+      setUsers(prevUsers);
       toast.error(err.message || 'Failed to update role');
     }
   };
@@ -96,16 +116,26 @@ export default function AdminUsersPage() {
                         {u.plan || 'free'}
                       </span>
                     </td>
-                    <td className="px-5 py-4 font-bold uppercase text-slate-700">{u.role}</td>
+                    <td className="px-5 py-4">
+                      <span className={`inline-block px-2.5 py-1 rounded-full text-[11px] font-bold uppercase tracking-wider ${
+                        u.role === 'admin'
+                          ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                          : u.role === 'tutor'
+                          ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                          : 'bg-blue-100 text-blue-800 border border-blue-200'
+                      }`}>
+                        {u.role}
+                      </span>
+                    </td>
                     <td className="px-5 py-4">
                       <select
                         value={u.role}
                         onChange={(e) => handleRoleChange(u._id, e.target.value)}
-                        className="px-2.5 py-1 text-xs border rounded-lg bg-slate-50 font-semibold"
+                        className="px-3 py-1.5 text-xs border border-slate-300 rounded-lg bg-white font-semibold text-slate-700 shadow-sm focus:outline-none focus:ring-2 focus:ring-emerald-500 cursor-pointer transition hover:border-slate-400"
                       >
-                        <option value="student">student</option>
-                        <option value="tutor">tutor</option>
-                        <option value="admin">admin</option>
+                        <option value="student">Student</option>
+                        <option value="tutor">Tutor</option>
+                        <option value="admin">Admin</option>
                       </select>
                     </td>
                     <td className="px-5 py-4 text-right">

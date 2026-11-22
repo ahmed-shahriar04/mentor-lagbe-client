@@ -45,13 +45,18 @@ export default function DashboardLayout({ children }) {
     // Strict Role-Based Route Guard
     if (pathname.startsWith('/dashboard/admin') && currentUser.role !== 'admin') {
       toast.error('Forbidden: Admin access required');
-      router.push(`/dashboard/${currentUser.role}`);
+      router.push(`/dashboard/${currentUser.role || 'student'}`);
       return;
     }
 
     if (pathname.startsWith('/dashboard/tutor') && currentUser.role !== 'tutor' && currentUser.role !== 'admin') {
       toast.error('Forbidden: Tutor privileges required');
       router.push('/dashboard/student');
+      return;
+    }
+
+    if (pathname.startsWith('/dashboard/student') && currentUser.role === 'tutor') {
+      router.push('/dashboard/tutor');
       return;
     }
 

@@ -36,9 +36,9 @@ export default function StudentOverviewPage() {
     async function load() {
       try {
         const res = await api.getStudentStats();
-        if (res.success && res.data) setStats(res.data);
+        if (res?.success && res?.data) setStats(res.data);
       } catch (e) {
-        console.error(e);
+        console.warn('Student stats fetch notice:', e?.message);
       } finally {
         setLoading(false);
       }
