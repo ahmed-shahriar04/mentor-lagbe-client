@@ -3,7 +3,7 @@ import { jwt } from 'better-auth/plugins';
 
 export const auth = betterAuth({
   secret: process.env.BETTER_AUTH_SECRET || 'super_secret_better_auth_session_key_2026',
-  baseURL: process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3000',
+  baseURL: process.env.NEXT_PUBLIC_CLIENT_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000'),
   user: {
     additionalFields: {
       role: {

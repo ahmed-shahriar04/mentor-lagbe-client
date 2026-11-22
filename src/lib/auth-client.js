@@ -3,7 +3,7 @@ import { createAuthClient } from 'better-auth/react';
 
 // Initialize Better Auth Client
 export const authClient = createAuthClient({
-  baseURL: process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3000',
+  baseURL: typeof window !== 'undefined' ? window.location.origin : (process.env.NEXT_PUBLIC_CLIENT_URL || (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 'http://localhost:3000')),
 });
 
 // Client auth helper for session, role, and JWT token
