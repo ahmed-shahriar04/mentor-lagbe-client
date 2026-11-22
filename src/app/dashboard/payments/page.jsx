@@ -22,6 +22,24 @@ export default function PaymentHistoryPage() {
   const [user, setUser] = useState(null);
   const [selectedReceipt, setSelectedReceipt] = useState(null);
 
+  const getPlanInfo = (item) => {
+    if (!item) {
+      return {
+        title: 'MentorLagbe Pro Membership (1 Month)',
+        desc: 'Unlimited tuition access, verified status & premium mentorship features for 1 month.',
+        role: 'student',
+      };
+    }
+    const isTutor = item.userRole === 'tutor' || item.amount === 15 || item.amount === 1500;
+    const title = isTutor
+      ? 'MentorLagbe Pro Tutor Plan (1 Month)'
+      : 'MentorLagbe Pro Student Plan (1 Month)';
+    const desc = isTutor
+      ? 'Unlimited tuition batch postings, verified mentor badge & priority search ranking for 1 month.'
+      : 'Unlimited bookmarks, direct mentor contacts & priority booking queue for 1 month.';
+    return { title, desc, role: isTutor ? 'tutor' : 'student' };
+  };
+
   useEffect(() => {
     const auth = getStoredAuth();
     setUser(auth?.user || null);
@@ -54,16 +72,9 @@ export default function PaymentHistoryPage() {
           day: 'numeric',
         })
       : 'Today';
-    const planTitle =
-      p.planName === 'pro'
-        ? p.userRole === 'tutor'
-          ? 'MentorLagbe Pro Tutor Plan (1 Month)'
-          : 'MentorLagbe Pro Student Plan (1 Month)'
-        : p.planName;
-    const planDesc =
-      p.userRole === 'tutor'
-        ? 'Unlimited tuition batch postings, verified mentor badge & priority search ranking for 1 month.'
-        : 'Unlimited bookmarks, direct mentor contacts & priority booking queue for 1 month.';
+    const planInfo = getPlanInfo(p);
+    const planTitle = planInfo.title;
+    const planDesc = planInfo.desc;
     const amountStr = `$${Number(p.amount || 0).toFixed(2)} ${p.currency || 'USD'}`;
     const userName = p.userName || user?.name || 'Customer';
     const userEmail = p.userEmail || user?.email || '';
@@ -421,13 +432,11 @@ export default function PaymentHistoryPage() {
                     </td>
                     <td className="px-6 py-4">
                       <span className="font-bold text-slate-900 block font-heading">
-                        {p.planName === 'pro'
-                          ? p.userRole === 'tutor'
-                            ? 'Pro Tutor Plan'
-                            : 'Pro Student Plan'
-                          : p.planName}
+                        {getPlanInfo(p).title}
                       </span>
-                      <span className="text-[10px] text-slate-400 capitalize">Role: {p.userRole}</span>
+                      <span className="text-[10px] text-slate-400 capitalize">
+                        Role: {p.userRole || getPlanInfo(p).role}
+                      </span>
                     </td>
                     <td className="px-6 py-4 font-bold text-emerald-600 text-sm">
                       ${p.amount?.toFixed(2)} {p.currency || 'USD'}
@@ -568,16 +577,10 @@ export default function PaymentHistoryPage() {
                     <tr>
                       <td className="px-4 py-3">
                         <p className="font-bold text-slate-900">
-                          {selectedReceipt.planName === 'pro'
-                            ? selectedReceipt.userRole === 'tutor'
-                              ? 'MentorLagbe Pro Tutor Plan'
-                              : 'MentorLagbe Pro Student Plan'
-                            : selectedReceipt.planName}
+                          {getPlanInfo(selectedReceipt).title}
                         </p>
                         <p className="text-[10px] text-slate-400">
-                          {selectedReceipt.userRole === 'tutor'
-                            ? 'Unlimited tuition postings, verified mentor badge & priority search ranking.'
-                            : 'Unlimited bookmarks, direct mentor contacts & priority booking queue.'}
+                          {getPlanInfo(selectedReceipt).desc}
                         </p>
                       </td>
                       <td className="px-4 py-3 text-center text-slate-500 capitalize">
