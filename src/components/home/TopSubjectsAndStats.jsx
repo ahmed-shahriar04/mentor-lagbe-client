@@ -1,0 +1,94 @@
+export default function TopSubjectsAndStats() {
+  const subjects = [
+    { name: 'Higher Mathematics', count: '140+ Batches', icon: '📐', href: '/tuitions?subject=Higher+Mathematics' },
+    { name: 'Physics (Board & Admission)', count: '110+ Batches', icon: '⚡', href: '/tuitions?subject=Physics' },
+    { name: 'IELTS & Spoken English', count: '95+ Batches', icon: '🗣️', href: '/tuitions?subject=IELTS' },
+    { name: 'ICT & C/Python Programming', count: '75+ Batches', icon: '💻', href: '/tuitions?subject=ICT+%26+Programming' },
+    { name: 'Chemistry & Biology', count: '120+ Batches', icon: '🔬', href: '/tuitions?subject=Chemistry' },
+    { name: 'Accounting & Commerce', count: '50+ Batches', icon: '📊', href: '/tuitions?subject=Accounting' },
+  ];
+
+  const testimonials = [
+    {
+      name: 'Sadia Rahman',
+      role: 'HSC Candidate 2026',
+      avatar: 'https://images.unsplash.com/photo-1494790108377-be9c29b29330?q=80&w=200&auto=format&fit=crop',
+      quote: 'MentorLagbe helped me find Dr. Tanvir Sir for Higher Math. His calculus conceptual problem sets helped me secure A+ in pre-test exams.',
+      rating: 5,
+    },
+    {
+      name: 'Rafiul Islam',
+      role: 'Class 10 SSC Student',
+      avatar: 'https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?q=80&w=200&auto=format&fit=crop',
+      quote: 'Applying took less than a minute! The mentor accepted my application on the same day and shared the class schedule directly.',
+      rating: 5,
+    },
+  ];
+
+  return (
+    <section className="py-16 sm:py-24 bg-white">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Top Subjects */}
+        <div className="text-center max-w-2xl mx-auto mb-12">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 font-heading">
+            Popular Categories
+          </span>
+          <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight font-heading mt-1">
+            Top Subjects in Demand
+          </h2>
+          <p className="text-sm text-slate-500 mt-2">
+            Explore dedicated tuition batches organized by Bangladesh's top curriculum subjects.
+          </p>
+        </div>
+
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-20">
+          {subjects.map((sub) => (
+            <a
+              key={sub.name}
+              href={sub.href}
+              className="p-4 bg-slate-50 hover:bg-emerald-50/60 rounded-2xl border border-slate-200 hover:border-emerald-200 transition text-center group flex flex-col items-center justify-center"
+            >
+              <span className="text-3xl mb-2 group-hover:scale-110 transition-transform">{sub.icon}</span>
+              <h4 className="text-xs font-bold text-slate-800 font-heading group-hover:text-emerald-700">
+                {sub.name}
+              </h4>
+              <p className="text-[10px] text-slate-400 mt-1">{sub.count}</p>
+            </a>
+          ))}
+        </div>
+
+        {/* Testimonials */}
+        <div className="border-t border-slate-100 pt-16">
+          <div className="text-center max-w-2xl mx-auto mb-12">
+            <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 font-heading">
+              Student Experiences
+            </span>
+            <h3 className="text-2xl font-extrabold text-slate-900 tracking-tight font-heading mt-1">
+              What Our Learners Say
+            </h3>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {testimonials.map((t, idx) => (
+              <div key={idx} className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+                <p className="text-sm text-slate-600 italic leading-relaxed mb-6">
+                  "{t.quote}"
+                </p>
+                <div className="flex items-center space-x-3">
+                  <img src={t.avatar} alt={t.name} className="w-10 h-10 rounded-full object-cover" />
+                  <div>
+                    <h5 className="text-xs font-bold text-slate-900">{t.name}</h5>
+                    <p className="text-[11px] text-slate-500">{t.role}</p>
+                  </div>
+                  <div className="ml-auto text-amber-500 text-xs">
+                    {'★'.repeat(t.rating)}
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+  );
+}
