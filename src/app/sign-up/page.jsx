@@ -59,45 +59,17 @@ export default function SignUpPage() {
     }
   };
 
-  const handleGoogleSignUp = async () => {
+    const handleGoogleSignUp = async () => {
     setGoogleLoading(true);
     try {
-      try {
-        await authClient.signIn.social({
-          provider: 'google',
-          callbackURL: role === 'tutor' ? '/dashboard/tutor' : '/dashboard/student',
-        });
-      } catch (betterAuthErr) {
-        const googleUser = {
-          name: 'Google Registered User',
-          email: 'google.account@gmail.com',
-          role: role,
-          plan: 'free',
-          image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop',
-        };
-
-        const googleToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({
-          email: googleUser.email,
-          name: googleUser.name,
-          role: role,
-          plan: 'free',
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
-        }))}.signature`;
-
-        setStoredAuth({
-          user: googleUser,
-          token: googleToken,
-        });
-
-        toast.success(`Registered with Google as ${role}!`);
-        if (role === 'tutor') {
-          router.push('/dashboard/tutor');
-        } else {
-          router.push('/dashboard/student');
-        }
-      }
+      // Real Google OAuth 2.0 flow via Better Auth with chosen role
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: role === 'tutor' ? '/dashboard/tutor' : '/dashboard/student',
+      });
     } catch (err) {
-      toast.error('Google Sign Up failed');
+      console.error('Google OAuth error:', err);
+      toast.error(err.message || 'Failed to initiate Google OAuth redirect. Ensure GOOGLE_CLIENT_ID is set in environment variables.');
     } finally {
       setGoogleLoading(false);
     }

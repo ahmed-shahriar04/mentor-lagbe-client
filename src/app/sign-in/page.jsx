@@ -58,44 +58,17 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
+    const handleGoogleSignIn = async () => {
     setGoogleLoading(true);
     try {
-      // Attempt Better Auth social login
-      try {
-        await authClient.signIn.social({
-          provider: 'google',
-          callbackURL: '/dashboard/student',
-        });
-      } catch (betterAuthErr) {
-        // In local development before Google Cloud OAuth Client ID is registered,
-        // provide seamless Google student sign-in fallback:
-        const googleUser = {
-          name: 'Google Learner',
-          email: 'google.student@gmail.com',
-          role: 'student',
-          plan: 'free',
-          image: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=120&auto=format&fit=crop',
-        };
-
-        const googleToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({
-          email: googleUser.email,
-          name: googleUser.name,
-          role: 'student',
-          plan: 'free',
-          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
-        }))}.signature`;
-
-        setStoredAuth({
-          user: googleUser,
-          token: googleToken,
-        });
-
-        toast.success('Signed in with Google successfully!');
-        router.push('/dashboard/student');
-      }
+      // Real Google OAuth 2.0 flow via Better Auth
+      await authClient.signIn.social({
+        provider: 'google',
+        callbackURL: '/dashboard/student',
+      });
     } catch (err) {
-      toast.error('Google Sign In failed');
+      console.error('Google OAuth error:', err);
+      toast.error(err.message || 'Failed to initiate Google OAuth redirect. Ensure GOOGLE_CLIENT_ID is set in environment variables.');
     } finally {
       setGoogleLoading(false);
     }
