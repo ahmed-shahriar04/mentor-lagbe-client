@@ -224,8 +224,8 @@ export default function DashboardLayout({ children }) {
         </div>
       </aside>
 
-      {/* Main Content Area */}
-      <main className="flex-1 p-4 sm:p-8 max-w-6xl">
+      {/* Main Content Area: Full Width with smooth responsive padding */}
+      <main className="flex-1 min-w-0 p-4 sm:p-8 lg:p-10 w-full overflow-x-hidden">
         {children}
       </main>
     </div>

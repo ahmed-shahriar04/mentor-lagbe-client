@@ -74,7 +74,7 @@ export default function PostTuitionPage() {
   };
 
   return (
-    <div className="max-w-3xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+    <div className="w-full bg-white rounded-3xl p-6 sm:p-10 border border-slate-200 shadow-sm">
       <div className="mb-6">
         <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 font-heading">
           Create Listing
