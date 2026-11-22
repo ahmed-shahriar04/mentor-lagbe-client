@@ -8,13 +8,14 @@ import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faGraduationCap, faSignInAlt } from '@fortawesome/free-solid-svg-icons';
 import { faGoogle } from '@fortawesome/free-brands-svg-icons';
+import GoogleAuthModal from '@/components/GoogleAuthModal';
 
 export default function SignInPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [googleLoading, setGoogleLoading] = useState(false);
+  const [showGoogleModal, setShowGoogleModal] = useState(false);
 
   const handleSignIn = async (e) => {
     e.preventDefault();
@@ -67,50 +68,16 @@ export default function SignInPage() {
     }
   };
 
-  const handleGoogleSignIn = async () => {
-    setGoogleLoading(true);
-    try {
-      const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
-      if (googleClientId && !googleClientId.includes('your_google_client_id')) {
-        const redirectUri = `${window.location.origin}/api/auth/callback/google`;
-        const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token&scope=openid%20email%20profile&prompt=select_account`;
-        window.location.href = googleAuthUrl;
-        return;
-      }
-
-      // Authentic Google account fallback
-      const googleUser = {
-        name: 'Shahriar Ahmed Riaz (Google)',
-        email: 'shahriarahmedriaz.google@gmail.com',
-        role: 'student',
-        plan: 'free',
-        image: 'https://lh3.googleusercontent.com/a/ACg8ocLwE7XJ0m5WkCgG211x_z0tT5H3g=s96-c',
-      };
-
-      const payload = {
-        email: googleUser.email,
-        name: googleUser.name,
-        role: 'student',
-        plan: 'free',
-        iat: Math.floor(Date.now() / 1000),
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
-      };
-
-      const googleToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(unescape(encodeURIComponent(JSON.stringify(payload))))}.google_verified`;
-
-      setStoredAuth({
-        user: googleUser,
-        token: googleToken,
-      });
-
-      toast.success('Signed in with Google successfully!');
-      router.push('/dashboard/student');
-    } catch (err) {
-      console.error('Google Sign In error:', err);
-      toast.error('Google Sign In failed');
-    } finally {
-      setGoogleLoading(false);
+  const handleGoogleClick = () => {
+    const googleClientId = process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID;
+    if (googleClientId && !googleClientId.includes('your_google_client_id')) {
+      const redirectUri = `${window.location.origin}/auth/callback`;
+      const googleAuthUrl = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${googleClientId}&redirect_uri=${encodeURIComponent(redirectUri)}&response_type=token%20id_token&scope=openid%20email%20profile&nonce=${Date.now()}&prompt=select_account`;
+      window.location.href = googleAuthUrl;
+      return;
     }
+    // Open Account Selector Modal
+    setShowGoogleModal(true);
   };
 
   return (
@@ -131,13 +98,19 @@ export default function SignInPage() {
         {/* Google Social Login Button with FontAwesome Icon */}
         <button
           type="button"
-          onClick={handleGoogleSignIn}
-          disabled={googleLoading}
-          className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center space-x-3 transition shadow-sm mb-5 disabled:opacity-50"
+          onClick={handleGoogleClick}
+          className="w-full py-2.5 px-4 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold flex items-center justify-center space-x-3 transition shadow-sm mb-5"
         >
           <FontAwesomeIcon icon={faGoogle} className="w-4 h-4 text-red-500" />
-          <span>{googleLoading ? 'Connecting to Google...' : 'Continue with Google'}</span>
+          <span>Continue with Google</span>
         </button>
+
+        {/* Google Account Selector Modal */}
+        <GoogleAuthModal
+          isOpen={showGoogleModal}
+          onClose={() => setShowGoogleModal(false)}
+          defaultRole="student"
+        />
 
         <div className="relative flex items-center justify-center mb-5">
           <div className="border-t border-slate-200 w-full"></div>
