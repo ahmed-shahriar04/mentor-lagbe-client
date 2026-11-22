@@ -112,7 +112,13 @@ export default function TuitionCard({ tuition, index = 0 }) {
                   src={tutorAvatar}
                   alt={tuition.tutorName || 'Tutor'}
                   referrerPolicy="no-referrer"
-                  onError={() => setImgError(true)}
+                  crossOrigin="anonymous"
+                  onError={(e) => {
+                    if (!imgError) {
+                      setImgError(true);
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`;
+                    }
+                  }}
                   className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/20 shadow-sm"
                 />
               ) : (

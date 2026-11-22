@@ -128,7 +128,7 @@ export default function PricingPage() {
               <p className="text-xs text-slate-500 mt-1">Unlock seamless booking and favorite tuitions</p>
               <div className="mt-6 flex items-baseline">
                 <span className="text-4xl font-extrabold text-slate-900 font-heading">$10</span>
-                <span className="text-slate-500 text-sm ml-2">/ one-time upgrade</span>
+                <span className="text-slate-500 text-sm ml-2">/ month (30 days)</span>
               </div>
 
               <div className="mt-8 space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-6">
@@ -190,7 +190,7 @@ export default function PricingPage() {
               <p className="text-xs text-slate-500 mt-1">For serious educators and coaching batch mentors</p>
               <div className="mt-6 flex items-baseline">
                 <span className="text-4xl font-extrabold text-slate-900 font-heading">$15</span>
-                <span className="text-slate-500 text-sm ml-2">/ one-time upgrade</span>
+                <span className="text-slate-500 text-sm ml-2">/ month (30 days)</span>
               </div>
 
               <div className="mt-8 space-y-3.5 text-xs text-slate-600 border-t border-slate-100 pt-6">

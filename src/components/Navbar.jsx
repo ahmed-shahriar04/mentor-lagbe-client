@@ -58,15 +58,48 @@ export default function Navbar() {
 
     syncAuth();
 
-    // Background sync with database to reflect admin role updates immediately
+    // Background sync with database to reflect admin role updates and sync profile picture
     const auth = getStoredAuth();
     if (auth?.token) {
       api.getCurrentUser()
         .then((res) => {
           if (res?.success && res?.data) {
             const fresh = res.data;
-            if (fresh.role !== auth.user?.role || fresh.plan !== auth.user?.plan) {
-              const updated = { ...auth, user: { ...auth.user, ...fresh } };
+            const hasLocalRealImage = Boolean(
+              auth.user?.image &&
+              !auth.user.image.includes('ui-avatars') &&
+              !auth.user.image.includes('unsplash')
+            );
+            const dbNeedsImage = Boolean(!fresh.image || fresh.image.includes('ui-avatars') || fresh.image.includes('unsplash'));
+
+            if (hasLocalRealImage && dbNeedsImage) {
+              // Immediately propagate user's real avatar to MongoDB & tuitions collection
+              api.updateProfile({ image: auth.user.image, name: auth.user.name || fresh.name })
+                .then((upRes) => {
+                  if (upRes?.success && upRes?.data) {
+                    const merged = { ...auth, user: { ...auth.user, ...upRes.data } };
+                    setStoredAuth(merged);
+                    setUser(merged.user);
+                  }
+                })
+                .catch(() => {});
+            } else if (
+              fresh.role !== auth.user?.role ||
+              fresh.plan !== auth.user?.plan ||
+              (fresh.image && fresh.image !== auth.user?.image)
+            ) {
+              const finalImage =
+                fresh.image && !fresh.image.includes('unsplash') && !fresh.image.includes('ui-avatars')
+                  ? fresh.image
+                  : auth.user?.image || fresh.image || '';
+              const updated = {
+                ...auth,
+                user: {
+                  ...auth.user,
+                  ...fresh,
+                  image: finalImage,
+                },
+              };
               setStoredAuth(updated);
               setUser(updated.user);
             }

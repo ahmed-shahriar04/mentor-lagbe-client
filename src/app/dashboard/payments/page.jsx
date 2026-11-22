@@ -42,8 +42,331 @@ export default function PaymentHistoryPage() {
     loadHistory();
   }, []);
 
-  const handlePrintReceipt = () => {
-    window.print();
+  const handlePrintReceipt = (receipt) => {
+    const p = receipt || selectedReceipt;
+    if (!p) return;
+
+    const invoiceNo = `INV-${(p.transactionId || p.stripeSessionId || 'ML').slice(-8).toUpperCase()}`;
+    const paymentDate = p.paidAt
+      ? new Date(p.paidAt).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric',
+        })
+      : 'Today';
+    const planTitle =
+      p.planName === 'pro'
+        ? p.userRole === 'tutor'
+          ? 'MentorLagbe Pro Tutor Plan (1 Month)'
+          : 'MentorLagbe Pro Student Plan (1 Month)'
+        : p.planName;
+    const planDesc =
+      p.userRole === 'tutor'
+        ? 'Unlimited tuition batch postings, verified mentor badge & priority search ranking for 1 month.'
+        : 'Unlimited bookmarks, direct mentor contacts & priority booking queue for 1 month.';
+    const amountStr = `$${Number(p.amount || 0).toFixed(2)} ${p.currency || 'USD'}`;
+    const userName = p.userName || user?.name || 'Customer';
+    const userEmail = p.userEmail || user?.email || '';
+    const userRole = p.userRole || user?.role || 'student';
+
+    const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Invoice Voucher - ${invoiceNo}</title>
+  <style>
+    @page {
+      size: A4 portrait;
+      margin: 15mm 20mm;
+    }
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+    }
+    html, body {
+      background: #ffffff;
+      color: #0f172a;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+    body {
+      padding: 24px;
+    }
+    .voucher-card {
+      max-width: 680px;
+      margin: 0 auto;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 20px;
+      padding: 32px 36px;
+      background: #ffffff;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1.5px solid #e2e8f0;
+      padding-bottom: 22px;
+      margin-bottom: 22px;
+    }
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .logo-icon {
+      width: 44px;
+      height: 44px;
+      border-radius: 12px;
+      background: #059669;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #ffffff;
+    }
+    .logo-icon svg {
+      width: 26px;
+      height: 26px;
+      fill: #ffffff;
+    }
+    .brand-title {
+      font-size: 22px;
+      font-weight: 800;
+      color: #0f172a;
+      letter-spacing: -0.5px;
+    }
+    .brand-title span {
+      color: #059669;
+    }
+    .brand-sub {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 1px;
+    }
+    .badge-voucher {
+      background: #ecfdf5;
+      color: #065f46;
+      border: 1.5px solid #a7f3d0;
+      padding: 6px 14px;
+      border-radius: 9999px;
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      display: inline-block;
+    }
+    .address {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 6px;
+      text-align: right;
+    }
+    .meta-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 16px 20px;
+      margin-bottom: 22px;
+    }
+    .meta-title {
+      font-size: 11px;
+      color: #64748b;
+      text-transform: uppercase;
+      font-weight: 600;
+      margin-bottom: 3px;
+    }
+    .meta-value-bold {
+      font-size: 14px;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .meta-sub {
+      font-size: 12px;
+      color: #475569;
+      margin-top: 2px;
+    }
+    .meta-right {
+      text-align: right;
+      font-size: 12px;
+    }
+    .meta-row {
+      margin-top: 4px;
+    }
+    .invoice-id {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-weight: 700;
+      color: #0f172a;
+    }
+    .table-box {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      overflow: hidden;
+      margin-bottom: 22px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+    }
+    th {
+      background: #f1f5f9;
+      padding: 12px 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      font-weight: 700;
+      color: #475569;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    td {
+      padding: 14px 16px;
+      font-size: 13px;
+      border-bottom: 1px solid #f1f5f9;
+    }
+    .item-title {
+      font-weight: 700;
+      color: #0f172a;
+      font-size: 14px;
+    }
+    .item-desc {
+      font-size: 11px;
+      color: #64748b;
+      margin-top: 3px;
+      line-height: 1.4;
+    }
+    tfoot td {
+      background: #f8fafc;
+      font-weight: 700;
+      border-top: 1.5px solid #e2e8f0;
+      border-bottom: none;
+    }
+    .total-amount {
+      font-size: 16px;
+      font-weight: 800;
+      color: #059669;
+    }
+    .footer {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-top: 6px;
+    }
+    .verified-note {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #059669;
+      font-weight: 600;
+    }
+    .paid-stamp {
+      border: 2px solid #059669;
+      color: #059669;
+      padding: 6px 16px;
+      border-radius: 10px;
+      font-weight: 900;
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      transform: rotate(-2deg);
+    }
+  </style>
+</head>
+<body>
+  <div class="voucher-card">
+    <div class="header">
+      <div class="brand">
+        <div class="logo-icon">
+          <svg viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
+        </div>
+        <div>
+          <div class="brand-title">Mentor<span>Lagbe</span></div>
+          <div class="brand-sub">Smart Tuition & Mentorship Platform</div>
+        </div>
+      </div>
+      <div>
+        <div class="badge-voucher">Official Voucher</div>
+        <div class="address">Dhanmondi 27, Dhaka-1209, Bangladesh</div>
+      </div>
+    </div>
+
+    <div class="meta-grid">
+      <div>
+        <div class="meta-title">Billed To</div>
+        <div class="meta-value-bold">${userName}</div>
+        <div class="meta-sub">${userEmail}</div>
+        <div class="meta-sub" style="text-transform: capitalize;">Role: ${userRole}</div>
+      </div>
+      <div class="meta-right">
+        <div><span style="color:#64748b;">Invoice ID: </span><span class="invoice-id">${invoiceNo}</span></div>
+        <div class="meta-row"><span style="color:#64748b;">Payment Date: </span><strong>${paymentDate}</strong></div>
+        <div class="meta-row"><span style="color:#64748b;">Billing Cycle: </span><strong>1 Month (Monthly)</strong></div>
+        <div class="meta-row"><span style="color:#64748b;">Gateway: </span><strong>Stripe Checkout</strong></div>
+      </div>
+    </div>
+
+    <div class="table-box">
+      <table>
+        <thead>
+          <tr>
+            <th>Description</th>
+            <th style="text-align: center;">Billing Cycle</th>
+            <th style="text-align: right;">Amount</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>
+              <div class="item-title">${planTitle}</div>
+              <div class="item-desc">${planDesc}</div>
+            </td>
+            <td style="text-align: center; color: #475569; font-weight: 600;">1 Month</td>
+            <td style="text-align: right; font-weight: 700; font-size: 14px;">${amountStr}</td>
+          </tr>
+        </tbody>
+        <tfoot>
+          <tr>
+            <td colspan="2" style="text-align: right; padding-right: 18px;">Total Paid:</td>
+            <td style="text-align: right;" class="total-amount">${amountStr}</td>
+          </tr>
+        </tfoot>
+      </table>
+    </div>
+
+    <div class="footer">
+      <div class="verified-note">
+        <svg style="width: 18px; height: 18px; fill: #059669;" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
+        <span>Verified Electronic Payment Confirmation</span>
+      </div>
+      <div class="paid-stamp">PAID IN FULL</div>
+    </div>
+  </div>
+
+  <script>
+    window.onload = function() {
+      setTimeout(function() {
+        window.print();
+      }, 300);
+    };
+  </script>
+</body>
+</html>`;
+
+    const printWindow = window.open('', '_blank');
+    if (printWindow) {
+      printWindow.document.open();
+      printWindow.document.write(html);
+      printWindow.document.close();
+    } else {
+      window.print();
+    }
   };
 
   return (
@@ -179,8 +502,10 @@ export default function PaymentHistoryPage() {
               {/* Header */}
               <div className="flex items-center justify-between border-b border-slate-200 pb-5">
                 <div className="flex items-center space-x-2.5">
-                  <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-500 flex items-center justify-center text-white shadow-md">
-                    <FontAwesomeIcon icon={faGraduationCap} className="w-5 h-5" />
+                  <div className="w-10 h-10 rounded-xl bg-emerald-600 flex items-center justify-center text-white shadow-md shrink-0">
+                    <svg className="w-6 h-6 fill-white" viewBox="0 0 24 24">
+                      <path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z" />
+                    </svg>
                   </div>
                   <div>
                     <h2 className="text-xl font-bold tracking-tight text-slate-900 font-heading">
@@ -219,6 +544,10 @@ export default function PaymentHistoryPage() {
                     </span>
                   </div>
                   <div>
+                    <span className="text-slate-400">Billing Cycle: </span>
+                    <span className="font-semibold text-slate-800">1 Month (Monthly)</span>
+                  </div>
+                  <div>
                     <span className="text-slate-400">Gateway: </span>
                     <span className="font-semibold text-slate-800">Stripe Checkout</span>
                   </div>
@@ -252,7 +581,7 @@ export default function PaymentHistoryPage() {
                         </p>
                       </td>
                       <td className="px-4 py-3 text-center text-slate-500 capitalize">
-                        One-Time
+                        1 Month (Monthly)
                       </td>
                       <td className="px-4 py-3 text-right font-bold text-slate-900">
                         ${selectedReceipt.amount?.toFixed(2)}

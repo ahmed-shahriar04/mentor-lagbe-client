@@ -420,7 +420,7 @@ export default function StudentOverviewPage() {
                 </Link>
               ) : (
                 <div className="py-2.5 px-4 text-center text-xs font-bold text-blue-300 bg-white/5 rounded-xl border border-white/10">
-                  Plan Active ✓ Lifetime Access
+                  Plan Active ✓ 1 Month Access
                 </div>
               )}
             </div>

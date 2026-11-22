@@ -37,14 +37,19 @@ export default function ProfilePage() {
         const res = await api.getCurrentUser();
         if (res?.success && res?.data) {
           const fresh = res.data;
-          setUser(fresh);
+          const finalImage =
+            fresh.image && !fresh.image.includes('unsplash') && !fresh.image.includes('ui-avatars')
+              ? fresh.image
+              : auth?.user?.image || fresh.image || '';
+
+          setUser({ ...fresh, image: finalImage });
           setName(fresh.name || '');
           setPhone(fresh.phone || '');
           setBio(fresh.bio || '');
-          setImage(fresh.image || '');
+          setImage(finalImage);
 
           if (auth) {
-            auth.user = { ...auth.user, ...fresh };
+            auth.user = { ...auth.user, ...fresh, image: finalImage };
             setStoredAuth(auth);
           }
         }

@@ -54,15 +54,25 @@ export default function GoogleOAuthCallback() {
         if (idToken) {
           try {
             const base64Url = idToken.split('.')[1];
-            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-            const jsonPayload = decodeURIComponent(
-              atob(base64)
-                .split('')
-                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
-                .join('')
-            );
-            const parsed = JSON.parse(jsonPayload);
-            googleUser = { ...parsed, ...googleUser, picture: googleUser?.picture || parsed.picture };
+            if (base64Url) {
+              let base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+              while (base64.length % 4) {
+                base64 += '=';
+              }
+              const jsonPayload = decodeURIComponent(
+                atob(base64)
+                  .split('')
+                  .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                  .join('')
+              );
+              const parsed = JSON.parse(jsonPayload);
+              const decodedPicture = parsed.picture || parsed.avatar_url || parsed.photoURL || '';
+              googleUser = {
+                ...parsed,
+                ...googleUser,
+                picture: googleUser?.picture || decodedPicture,
+              };
+            }
           } catch (e) {
             console.error('Failed to parse id_token:', e);
           }
@@ -70,7 +80,10 @@ export default function GoogleOAuthCallback() {
 
         const email = (googleUser?.email || 'google_user@mentorlagbe.com').trim().toLowerCase();
         const name = googleUser?.name || email.split('@')[0];
-        const image = googleUser?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=059669&color=fff&bold=true`;
+        const rawPic = googleUser?.picture || googleUser?.avatar_url || googleUser?.photoURL || '';
+        const image = rawPic && rawPic.startsWith('http')
+          ? rawPic
+          : `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=059669&color=fff&bold=true`;
 
         // Retrieve real, latest user role and profile from MongoDB
         let role = sessionStorage.getItem('mentorlagbe_oauth_role') || 'student';
@@ -81,7 +94,7 @@ export default function GoogleOAuthCallback() {
           const loginRes = await fetch(`${apiUrl}/users/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ email }),
+            body: JSON.stringify({ email, name, image }),
           });
           const loginData = await loginRes.json();
           if (loginData?.success && loginData?.user?.role) {
@@ -97,6 +110,7 @@ export default function GoogleOAuthCallback() {
           name,
           role,
           plan,
+          image,
           iat: Math.floor(Date.now() / 1000),
           exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
         };

@@ -156,6 +156,13 @@ export default function TuitionDetailsPage() {
   }
 
   const tutor = tuition.tutorDetails || {};
+  const mentorPhoto =
+    tutor.image ||
+    tuition.tutorImage ||
+    (user?.email &&
+    (user.email.toLowerCase() === (tutor.email || tuition.tutorEmail || '').toLowerCase())
+      ? user.image
+      : null);
   const isStudent = user?.role === 'student';
   const isTutorOrAdmin = user?.role === 'tutor' || user?.role === 'admin';
 
@@ -281,12 +288,18 @@ export default function TuitionDetailsPage() {
               </span>
               <div className="mt-4 flex items-center space-x-3.5">
                 <div className="relative shrink-0">
-                  {(tutor.image || tuition.tutorImage) && !imgError ? (
+                  {mentorPhoto && !imgError ? (
                     <img
-                      src={tutor.image || tuition.tutorImage}
-                      alt={tutor.name || tuition.tutorName}
+                      src={mentorPhoto}
+                      alt={tutor.name || tuition.tutorName || 'Mentor'}
                       referrerPolicy="no-referrer"
-                      onError={() => setImgError(true)}
+                      crossOrigin="anonymous"
+                      onError={(e) => {
+                        if (!imgError) {
+                          setImgError(true);
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.name || tuition.tutorName || 'Mentor')}&background=059669&color=fff&bold=true`;
+                        }
+                      }}
                       className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm"
                     />
                   ) : (
