@@ -1,0 +1,36 @@
+'use client';
+import { createAuthClient } from 'better-auth/react';
+
+// Initialize Better Auth Client
+export const authClient = createAuthClient({
+  baseURL: process.env.NEXT_PUBLIC_CLIENT_URL || 'http://localhost:3000',
+});
+
+// Client auth helper for session, role, and JWT token
+export const getStoredAuth = () => {
+  if (typeof window === 'undefined') return null;
+  try {
+    const raw = localStorage.getItem('mentorlagbe_auth');
+    if (!raw) return null;
+    return JSON.parse(raw);
+  } catch (e) {
+    return null;
+  }
+};
+
+export const setStoredAuth = (authData) => {
+  if (typeof window === 'undefined') return;
+  if (!authData) {
+    localStorage.removeItem('mentorlagbe_auth');
+  } else {
+    localStorage.setItem('mentorlagbe_auth', JSON.stringify(authData));
+  }
+  // Dispatch custom storage event for sync across components
+  window.dispatchEvent(new Event('mentorlagbe_auth_change'));
+};
+
+export const clearStoredAuth = () => {
+  if (typeof window === 'undefined') return;
+  localStorage.removeItem('mentorlagbe_auth');
+  window.dispatchEvent(new Event('mentorlagbe_auth_change'));
+};
