@@ -23,26 +23,50 @@ export default function SignInPage() {
 
     setLoading(true);
     try {
+      const cleanEmail = email.trim().toLowerCase();
+
+      // Retrieve real, latest user role and profile from MongoDB
       let role = 'student';
-      if (email.toLowerCase().includes('admin') || email === 'shahriarahmedriaz_admin@mentrolagbe.com') {
-        role = 'admin';
-      } else if (email.toLowerCase().includes('tutor') || email === 'shahriarahmedriaz.tutor@mentorlagbe.com' || email.includes('buet') || email.includes('eng')) {
-        role = 'tutor';
+      let userName = cleanEmail.split('@')[0];
+      let userImage = 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop';
+      let plan = 'free';
+
+      try {
+        const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+        const loginRes = await fetch(`${apiUrl}/users/login`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: cleanEmail, password }),
+        });
+        const loginData = await loginRes.json();
+        if (loginData?.success && loginData?.user) {
+          role = loginData.user.role || role;
+          userName = loginData.user.name || userName;
+          userImage = loginData.user.image || userImage;
+          plan = loginData.user.plan || 'free';
+        }
+      } catch (serverErr) {
+        // Fallback in case backend is unreachable
+        if (cleanEmail.includes('admin') || cleanEmail === 'shahriarahmedriaz_admin@mentrolagbe.com') {
+          role = 'admin';
+        } else if (cleanEmail.includes('tutor') || cleanEmail === 'shahriarahmedriaz.tutor@mentorlagbe.com') {
+          role = 'tutor';
+        }
       }
 
-      const mockUser = {
-        name: email.split('@')[0],
-        email,
-        role,
-        plan: 'free',
-        image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop',
+      const activeUser = {
+        name: userName,
+        email: cleanEmail,
+        role: role,
+        plan: plan,
+        image: userImage,
       };
 
       const payload = {
-        email,
-        name: mockUser.name,
-        role,
-        plan: 'free',
+        email: cleanEmail,
+        name: activeUser.name,
+        role: activeUser.role,
+        plan: activeUser.plan,
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
       };
@@ -50,11 +74,11 @@ export default function SignInPage() {
       const token = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(unescape(encodeURIComponent(JSON.stringify(payload))))}.token_signature`;
 
       setStoredAuth({
-        user: mockUser,
+        user: activeUser,
         token: token,
       });
 
-      toast.success(`Welcome back, ${mockUser.name}!`, { id: 'auth-toast' });
+      toast.success(`Welcome back, ${activeUser.name}!`, { id: 'auth-toast' });
 
       if (role === 'admin') router.push('/dashboard/admin');
       else if (role === 'tutor') router.push('/dashboard/tutor');

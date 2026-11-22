@@ -38,9 +38,16 @@ export default function TutorOverviewPage() {
     async function load() {
       try {
         const res = await api.getTutorStats();
-        if (res.success && res.data) setStats(res.data);
+        if (res?.success && res?.data) {
+          setStats(res.data);
+          if (auth?.user && auth.user.plan !== res.data.currentPlan) {
+            auth.user.plan = res.data.currentPlan;
+            setStoredAuth(auth);
+            setUser({ ...auth.user });
+          }
+        }
       } catch (e) {
-        console.error(e);
+        console.warn('Tutor stats fetch notice:', e?.message);
       } finally {
         setLoading(false);
       }
@@ -48,7 +55,7 @@ export default function TutorOverviewPage() {
     load();
   }, []);
 
-  const isPro = stats.currentPlan === 'pro' || user?.plan === 'pro';
+  const isPro = stats.currentPlan === 'pro';
 
   // Animation variants
   const containerVariants = {

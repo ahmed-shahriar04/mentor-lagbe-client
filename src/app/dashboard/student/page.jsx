@@ -36,7 +36,14 @@ export default function StudentOverviewPage() {
     async function load() {
       try {
         const res = await api.getStudentStats();
-        if (res?.success && res?.data) setStats(res.data);
+        if (res?.success && res?.data) {
+          setStats(res.data);
+          if (auth?.user && auth.user.plan !== res.data.currentPlan) {
+            auth.user.plan = res.data.currentPlan;
+            setStoredAuth(auth);
+            setUser({ ...auth.user });
+          }
+        }
       } catch (e) {
         console.warn('Student stats fetch notice:', e?.message);
       } finally {
@@ -46,7 +53,7 @@ export default function StudentOverviewPage() {
     load();
   }, []);
 
-  const isPro = stats.currentPlan === 'pro' || user?.plan === 'pro';
+  const isPro = stats.currentPlan === 'pro';
 
   // Animation variants
   const containerVariants = {
