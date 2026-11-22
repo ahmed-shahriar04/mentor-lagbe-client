@@ -247,15 +247,25 @@ export default function TuitionDetailsPage() {
                 About the Mentor
               </span>
               <div className="mt-4 flex items-center space-x-3.5">
-                <img
-                  src={tutor.image || tuition.tutorImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.name || tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`}
-                  alt={tutor.name || tuition.tutorName}
-                  referrerPolicy="no-referrer"
-                  onError={(e) => {
-                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.name || tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`;
-                  }}
-                  className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20"
-                />
+                <div className="relative shrink-0">
+                  <img
+                    src={tutor.image || tuition.tutorImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop'}
+                    alt={tutor.name || tuition.tutorName}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop';
+                    }}
+                    className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm"
+                  />
+                  {tutor.plan === 'pro' && (
+                    <img
+                      src="/pro-badge.svg"
+                      alt="Pro"
+                      className="absolute -bottom-1 -right-1 w-5 h-5 drop-shadow-md"
+                      title="Pro Verified Mentor"
+                    />
+                  )}
+                </div>
                 <div>
                   <h4 className="text-base font-bold text-slate-900 font-heading">
                     {tutor.name || tuition.tutorName}
@@ -265,8 +275,9 @@ export default function TuitionDetailsPage() {
                       Tutor
                     </span>
                     {tutor.plan === 'pro' && (
-                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-amber-100 text-amber-700">
-                        Pro Verified
+                      <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200 flex items-center space-x-1">
+                        <img src="/pro-badge.svg" alt="Pro" className="w-3.5 h-3.5 inline" />
+                        <span>Pro Verified Mentor</span>
                       </span>
                     )}
                   </div>

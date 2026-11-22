@@ -1,3 +1,6 @@
+'use client';
+
+import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   faCalculator,
@@ -52,10 +55,19 @@ export default function TopSubjectsAndStats() {
         </div>
 
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4 mb-20">
-          {subjects.map((sub) => (
-            <a
+          {subjects.map((sub, index) => (
+            <motion.a
               key={sub.name}
               href={sub.href}
+              initial={{ opacity: 0, y: 25 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true, margin: '-30px' }}
+              transition={{
+                duration: 0.45,
+                delay: (index % 6) * 0.08,
+                ease: [0.25, 0.1, 0.25, 1],
+              }}
+              whileHover={{ y: -4, transition: { duration: 0.2 } }}
               className="p-5 bg-slate-50 hover:bg-emerald-50/50 rounded-2xl border border-slate-200 hover:border-emerald-300 transition text-center group flex flex-col items-center justify-center shadow-sm"
             >
               <div className={`w-12 h-12 rounded-xl flex items-center justify-center mb-3 group-hover:scale-110 transition-transform ${sub.color}`}>
@@ -65,7 +77,7 @@ export default function TopSubjectsAndStats() {
                 {sub.name}
               </h4>
               <p className="text-[10px] text-slate-400 mt-1">{sub.count}</p>
-            </a>
+            </motion.a>
           ))}
         </div>
 
@@ -82,7 +94,18 @@ export default function TopSubjectsAndStats() {
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between">
+              <motion.div
+                key={idx}
+                initial={{ opacity: 0, y: 25 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, margin: '-30px' }}
+                transition={{
+                  duration: 0.5,
+                  delay: idx * 0.15,
+                  ease: [0.25, 0.1, 0.25, 1],
+                }}
+                className="p-6 rounded-2xl bg-slate-50 border border-slate-200 flex flex-col justify-between"
+              >
                 <p className="text-sm text-slate-600 italic leading-relaxed mb-6">
                   "{t.quote}"
                 </p>
@@ -96,7 +119,7 @@ export default function TopSubjectsAndStats() {
                     {'★'.repeat(t.rating)}
                   </div>
                 </div>
-              </div>
+              </motion.div>
             ))}
           </div>
         </div>

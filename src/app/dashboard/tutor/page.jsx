@@ -52,7 +52,16 @@ export default function TutorOverviewPage() {
         </div>
         <div className="p-5 bg-white rounded-2xl border border-slate-200 shadow-sm">
           <p className="text-xs font-semibold text-slate-500">Current Plan</p>
-          <p className="text-2xl font-extrabold text-amber-600 font-heading mt-2 uppercase">{stats.currentPlan} PLAN</p>
+          <div className="flex items-center space-x-2 mt-2">
+            {stats.currentPlan === 'pro' ? (
+              <>
+                <img src="/pro-badge.svg" alt="Pro Badge" className="w-6 h-6" />
+                <span className="text-xl font-extrabold text-blue-600 font-heading">PRO MENTOR</span>
+              </>
+            ) : (
+              <span className="text-xl font-extrabold text-slate-700 font-heading">FREE PLAN</span>
+            )}
+          </div>
         </div>
       </div>
 

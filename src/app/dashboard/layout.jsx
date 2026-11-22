@@ -76,6 +76,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Overview', href: '/dashboard/student', icon: faChartLine },
     { name: 'My Applications', href: '/dashboard/student/my-applications', icon: faClipboardList },
     { name: 'Saved Tuitions', href: '/dashboard/student/saved-tuitions', icon: faBookmark },
+    { name: 'Payment Receipts', href: '/dashboard/payments', icon: faCreditCard },
     { name: 'Update Profile', href: '/dashboard/profile', icon: faUser },
     { name: 'Upgrade to Pro', href: '/pricing', icon: faCrown },
   ];
@@ -86,6 +87,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Post a Tuition', href: '/dashboard/tutor/post-tuition', icon: faPlus },
     { name: 'My Created Tuitions', href: '/dashboard/tutor/my-tuitions', icon: faBook },
     { name: 'Manage Applicants', href: '/dashboard/tutor/applicants', icon: faUsers },
+    { name: 'Payment Receipts', href: '/dashboard/payments', icon: faCreditCard },
     { name: 'Update Profile', href: '/dashboard/profile', icon: faUser },
     { name: 'Upgrade to Pro', href: '/pricing', icon: faCrown },
   ];
@@ -131,7 +133,7 @@ export default function DashboardLayout({ children }) {
         <div>
           {/* Sidebar Top: User Profile Badge */}
           <div className="p-6 border-b border-slate-100 flex items-center space-x-3">
-            <Link href="/dashboard/profile" title="Edit Profile">
+            <Link href="/dashboard/profile" title="Edit Profile" className="relative shrink-0">
               <img
                 src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=059669&color=fff&bold=true`}
                 alt={user.name}
@@ -139,20 +141,29 @@ export default function DashboardLayout({ children }) {
                 onError={(e) => {
                   e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=059669&color=fff&bold=true`;
                 }}
-                className="w-11 h-11 rounded-2xl object-cover ring-2 ring-emerald-500/20 hover:ring-emerald-500 transition"
+                className="w-11 h-11 rounded-2xl object-cover ring-2 ring-emerald-500/20 hover:ring-emerald-500 transition shadow-sm"
               />
+              {user.plan === 'pro' && (
+                <img
+                  src="/pro-badge.svg"
+                  alt="Pro"
+                  className="absolute -bottom-1 -right-1 w-4 h-4 drop-shadow-sm"
+                  title="Verified Pro Member"
+                />
+              )}
             </Link>
             <div className="flex-1 min-w-0">
               <h4 className="text-xs font-bold text-slate-900 truncate">{user.name}</h4>
-              <div className="flex items-center space-x-1 mt-0.5">
+              <div className="flex items-center space-x-1.5 mt-0.5">
                 <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded uppercase ${
                   role === 'admin' ? 'bg-purple-100 text-purple-700' : role === 'tutor' ? 'bg-blue-100 text-blue-700' : 'bg-emerald-100 text-emerald-700'
                 }`}>
                   {role}
                 </span>
                 {user.plan === 'pro' && (
-                  <span className="text-[9px] font-bold px-1 rounded bg-amber-100 text-amber-800">
-                    PRO
+                  <span className="inline-flex items-center space-x-1 text-[10px] font-bold px-1.5 py-0.5 rounded bg-blue-50 text-blue-700 border border-blue-200">
+                    <img src="/pro-badge.svg" alt="Pro" className="w-3 h-3 inline" />
+                    <span>PRO</span>
                   </span>
                 )}
               </div>

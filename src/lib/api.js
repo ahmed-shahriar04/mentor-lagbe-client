@@ -66,8 +66,13 @@ export const api = {
   getTutorStats: () => fetchApi('/applications/tutor/stats'),
 
   // Payments
-  createCheckoutSession: () => fetchApi('/payments/create-checkout-session', { method: 'POST' }),
+  createCheckoutSession: (payload) =>
+    fetchApi('/payments/create-checkout-session', {
+      method: 'POST',
+      body: JSON.stringify(payload || {}),
+    }),
   verifySession: (sessionId) => fetchApi(`/payments/verify-session/${sessionId}`),
+  getMyPayments: () => fetchApi('/payments/my-history'),
   getAdminTransactions: () => fetchApi('/payments/admin/all'),
 
   // Users & Profile

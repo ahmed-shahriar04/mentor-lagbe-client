@@ -1,22 +1,30 @@
+'use client';
+
 import Link from 'next/link';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faGraduationCap } from '@fortawesome/free-solid-svg-icons';
 
 export default function Footer() {
   return (
     <footer className="bg-slate-900 text-slate-300 pt-16 pb-12 border-t border-slate-800">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 pb-12 border-b border-slate-800">
-          {/* Brand info */}
+          
+          {/* Brand info (Exact same logo as Navbar) */}
           <div className="md:col-span-1 space-y-4">
-            <Link href="/" className="flex items-center space-x-2">
-              <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-green-400 flex items-center justify-center text-white font-bold">
-                M
+            <Link href="/" className="flex items-center space-x-2.5">
+              <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-500 to-green-400 flex items-center justify-center text-white shadow-md shadow-emerald-500/20">
+                <FontAwesomeIcon icon={faGraduationCap} className="w-5 h-5" />
               </div>
-              <span className="text-xl font-bold tracking-tight text-white font-heading">
-                Mentor<span className="text-emerald-400">Lagbe</span>
-              </span>
+              <div className="flex flex-col">
+                <span className="text-xl font-bold tracking-tight text-white font-heading">
+                  Mentor<span className="text-emerald-400">Lagbe</span>
+                </span>
+                <span className="text-[10px] text-slate-400 -mt-1 font-medium">Smart Tuition & Mentorship</span>
+              </div>
             </Link>
             <p className="text-sm text-slate-400 leading-relaxed">
-              Bangladesh's leading EdTech & smart tuition booking ecosystem. Connecting verified tutors with ambitious students.
+              Bangladesh's leading EdTech & smart tuition booking ecosystem. Connecting verified mentors with ambitious learners.
             </p>
             {/* Social media icons with the NEW X logo */}
             <div className="flex items-center space-x-3 pt-2">
@@ -88,30 +96,30 @@ export default function Footer() {
             </ul>
           </div>
 
-          {/* Subjects */}
+          {/* Trust & Safety / Guidelines (Replaced Popular Subjects) */}
           <div>
             <h4 className="text-sm font-semibold text-white tracking-wider uppercase mb-4 font-heading">
-              Popular Subjects
+              Trust & Security
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
-                <Link href="/tuitions?subject=Higher+Mathematics" className="hover:text-emerald-400 transition">
-                  Higher Mathematics
+                <Link href="/tuitions" className="hover:text-emerald-400 transition">
+                  Verified Tutor Standards
                 </Link>
               </li>
               <li>
-                <Link href="/tuitions?subject=Physics" className="hover:text-emerald-400 transition">
-                  HSC & Board Physics
+                <Link href="/pricing" className="hover:text-emerald-400 transition">
+                  Stripe Payment Protection
                 </Link>
               </li>
               <li>
-                <Link href="/tuitions?subject=IELTS" className="hover:text-emerald-400 transition">
-                  IELTS & Spoken English
+                <Link href="/#how-it-works" className="hover:text-emerald-400 transition">
+                  Safety & Code of Conduct
                 </Link>
               </li>
               <li>
-                <Link href="/tuitions?subject=ICT+%26+Programming" className="hover:text-emerald-400 transition">
-                  ICT, C & Python Coding
+                <Link href="/#how-it-works" className="hover:text-emerald-400 transition">
+                  Terms & Academic Integrity
                 </Link>
               </li>
             </ul>

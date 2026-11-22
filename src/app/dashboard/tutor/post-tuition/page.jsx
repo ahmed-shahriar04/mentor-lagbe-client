@@ -30,7 +30,7 @@ export default function PostTuitionPage() {
     try {
       const url = await uploadToImgBB(file);
       setBannerImage(url);
-      toast.success('Banner image uploaded successfully via ImgBB!');
+      toast.success('Banner image uploaded successfully!');
     } catch (err) {
       toast.error(err.message || 'Image upload failed. You can paste a direct image URL as fallback.');
     } finally {
@@ -191,10 +191,10 @@ export default function PostTuitionPage() {
           />
         </div>
 
-        {/* Challenge 3: ImgBB Banner Upload */}
+        {/* Banner Upload */}
         <div>
           <label className="block text-xs font-semibold text-slate-700 mb-1">
-            Banner Image (Direct File Upload via ImgBB API)
+            Banner Image (Direct File Upload)
           </label>
           <div className="flex flex-col sm:flex-row items-center gap-3">
             <input
@@ -205,7 +205,7 @@ export default function PostTuitionPage() {
             />
             {uploadingImage && (
               <span className="text-xs text-emerald-600 font-semibold animate-pulse">
-                Uploading to ImgBB...
+                Uploading banner image...
               </span>
             )}
           </div>

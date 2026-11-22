@@ -1,3 +1,5 @@
+'use client';
+
 export default function HowItWorks() {
   const steps = [
     {
@@ -61,14 +63,14 @@ export default function HowItWorks() {
           {steps.map((step) => (
             <div
               key={step.num}
-              className="relative p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-md transition flex flex-col justify-between"
+              className="relative p-6 bg-white rounded-2xl border border-slate-200 shadow-sm hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between group"
             >
               <div>
                 <div className="flex items-center justify-between mb-4">
-                  <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center">
+                  <div className="w-12 h-12 rounded-xl bg-emerald-50 group-hover:bg-emerald-100 flex items-center justify-center transition-colors">
                     {step.icon}
                   </div>
-                  <span className="text-3xl font-extrabold text-slate-200 font-heading">
+                  <span className="text-3xl font-extrabold text-slate-200 group-hover:text-emerald-200 font-heading transition-colors">
                     {step.num}
                   </span>
                 </div>

@@ -14,6 +14,7 @@ export default function ProfilePage() {
   const [phone, setPhone] = useState('');
   const [bio, setBio] = useState('');
   const [image, setImage] = useState('');
+  const [imgError, setImgError] = useState(false);
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
   const [deleting, setDeleting] = useState(false);
@@ -38,7 +39,8 @@ export default function ProfilePage() {
     try {
       const url = await uploadToImgBB(file);
       setImage(url);
-      toast.success('Profile photo uploaded via ImgBB!');
+      setImgError(false);
+      toast.success('Profile photo uploaded successfully!');
     } catch (err) {
       toast.error(err.message || 'Image upload failed. You can paste an image URL instead.');
     } finally {
@@ -108,20 +110,34 @@ export default function ProfilePage() {
         </div>
 
         <form onSubmit={handleSaveProfile} className="space-y-5">
-          {/* Profile Avatar & ImgBB direct file upload */}
+          {/* Profile Avatar & direct file upload */}
           <div className="flex items-center space-x-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-            <img
-              src={image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=059669&color=fff&bold=true`}
-              alt="Profile Avatar"
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=059669&color=fff&bold=true`;
-              }}
-              className="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-500/20"
-            />
+            <div className="relative shrink-0">
+              {image && !imgError ? (
+                <img
+                  src={image}
+                  alt={name || 'Profile Avatar'}
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgError(true)}
+                  className="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm"
+                />
+              ) : (
+                <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-500 flex items-center justify-center text-white font-extrabold text-2xl shadow-sm ring-2 ring-emerald-500/20 shrink-0">
+                  {(name || 'U').charAt(0).toUpperCase()}
+                </div>
+              )}
+              {user?.plan === 'pro' && (
+                <img
+                  src="/pro-badge.svg"
+                  alt="Pro"
+                  className="absolute -bottom-1.5 -right-1.5 w-6 h-6 drop-shadow-md"
+                  title="Verified Pro Member"
+                />
+              )}
+            </div>
             <div className="space-y-1">
               <label className="block text-xs font-bold text-slate-800">
-                Upload Profile Picture (ImgBB API)
+                Upload Profile Picture
               </label>
               <input
                 type="file"
@@ -131,7 +147,7 @@ export default function ProfilePage() {
               />
               {uploadingImage && (
                 <p className="text-[11px] text-emerald-600 font-semibold animate-pulse">
-                  Uploading to ImgBB...
+                  Uploading photo...
                 </p>
               )}
             </div>

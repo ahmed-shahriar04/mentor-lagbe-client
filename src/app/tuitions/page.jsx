@@ -196,8 +196,8 @@ export default function BrowseTuitionsPage() {
         ) : tuitions.length > 0 ? (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-              {tuitions.map((tuition) => (
-                <TuitionCard key={tuition._id} tuition={tuition} />
+              {tuitions.map((tuition, index) => (
+                <TuitionCard key={tuition._id} tuition={tuition} index={index} />
               ))}
             </div>
 

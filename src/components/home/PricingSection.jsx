@@ -1,4 +1,7 @@
+'use client';
+
 import Link from 'next/link';
+import { motion } from 'framer-motion';
 
 export default function PricingSection() {
   return (
@@ -16,55 +19,67 @@ export default function PricingSection() {
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-          {/* Pro Tutor Plan */}
-          <div className="p-8 rounded-3xl bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 flex flex-col justify-between relative overflow-hidden">
-            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-xl uppercase tracking-wider">
-              Most Popular
-            </div>
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 max-w-6xl mx-auto items-stretch">
+          
+          {/* Free Starter */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: 0.05, ease: [0.25, 0.1, 0.25, 1] }}
+            whileHover={{ y: -6, transition: { duration: 0.2 } }}
+            className="p-8 rounded-3xl bg-white border border-slate-200 shadow-sm flex flex-col justify-between"
+          >
             <div>
-              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider font-heading">
-                For Educators
+              <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-heading">
+                For Everyone
               </span>
               <h3 className="text-2xl font-bold text-slate-900 font-heading mt-1">
-                Pro Tutor Plan
+                Starter Plan
               </h3>
               <div className="mt-4 flex items-baseline">
-                <span className="text-4xl font-extrabold text-slate-900 font-heading">$15</span>
-                <span className="text-slate-500 text-sm ml-1.5">/ one-time upgrade</span>
+                <span className="text-4xl font-extrabold text-slate-900 font-heading">$0</span>
+                <span className="text-slate-500 text-sm ml-1.5">/ free forever</span>
               </div>
               <p className="text-xs text-slate-500 mt-2">
-                Designed for full-time teachers and coaching mentors aiming to reach more students.
+                Basic access for browsing and posting standard tuitions.
               </p>
 
               <ul className="mt-6 space-y-3 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-emerald-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
-                  <strong>Unlimited</strong> tuition batch postings (Free plan is limited to 2)
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  Post up to 2 tuition batches
                 </li>
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-emerald-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
-                  Verified Pro Tutor Badge next to your profile
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  Bookmark up to 5 saved tuitions
                 </li>
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-emerald-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
-                  Direct student applicant management dashboard
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  Full search & filter access
                 </li>
               </ul>
             </div>
 
             <div className="mt-8">
               <Link
-                href="/pricing"
-                className="w-full block text-center py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
+                href="/tuitions"
+                className="w-full block text-center py-3 px-4 text-sm font-bold text-slate-700 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
               >
-                Upgrade with Stripe ($15)
+                Get Started Free
               </Link>
             </div>
-          </div>
+          </motion.div>
 
           {/* Pro Student Plan */}
-          <div className="p-8 rounded-3xl bg-white border border-slate-200 shadow-md flex flex-col justify-between">
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: 0.15, ease: [0.25, 0.1, 0.25, 1] }}
+            whileHover={{ y: -6, transition: { duration: 0.2 } }}
+            className="p-8 rounded-3xl bg-white border border-slate-200 shadow-md flex flex-col justify-between"
+          >
             <div>
               <span className="text-xs font-bold text-blue-700 uppercase tracking-wider font-heading">
                 For Students
@@ -82,15 +97,15 @@ export default function PricingSection() {
 
               <ul className="mt-6 space-y-3 text-xs text-slate-600 border-t border-slate-100 pt-6">
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-blue-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
-                  <strong>Unlimited</strong> tuition bookmarks (Free plan is limited to 5)
+                  <span className="text-blue-600 font-bold mr-2">✓</span>
+                  <strong>Unlimited</strong> tuition bookmarks
                 </li>
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-blue-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
-                  Priority booking queue on limited capacity batches
+                  <span className="text-blue-600 font-bold mr-2">✓</span>
+                  Priority booking queue on limited batches
                 </li>
                 <li className="flex items-center">
-                  <svg className="w-4 h-4 text-blue-600 mr-2 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7"/></svg>
+                  <span className="text-blue-600 font-bold mr-2">✓</span>
                   Verified Student Pro status
                 </li>
               </ul>
@@ -101,10 +116,64 @@ export default function PricingSection() {
                 href="/pricing"
                 className="w-full block text-center py-3 px-4 text-sm font-bold text-slate-800 bg-slate-100 hover:bg-slate-200 rounded-xl transition"
               >
-                Upgrade with Stripe ($10)
+                Upgrade Student ($10)
               </Link>
             </div>
-          </div>
+          </motion.div>
+
+          {/* Pro Tutor Plan */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: '-40px' }}
+            transition={{ duration: 0.5, delay: 0.25, ease: [0.25, 0.1, 0.25, 1] }}
+            whileHover={{ y: -6, transition: { duration: 0.2 } }}
+            className="p-8 rounded-3xl bg-white border-2 border-emerald-500 shadow-xl shadow-emerald-500/10 flex flex-col justify-between relative overflow-hidden"
+          >
+            <div className="absolute top-0 right-0 bg-emerald-600 text-white text-[11px] font-bold px-4 py-1 rounded-bl-xl uppercase tracking-wider">
+              Most Popular
+            </div>
+            <div>
+              <span className="text-xs font-bold text-emerald-700 uppercase tracking-wider font-heading">
+                For Educators
+              </span>
+              <h3 className="text-2xl font-bold text-slate-900 font-heading mt-1">
+                Pro Tutor Plan
+              </h3>
+              <div className="mt-4 flex items-baseline">
+                <span className="text-4xl font-extrabold text-slate-900 font-heading">$15</span>
+                <span className="text-slate-500 text-sm ml-1.5">/ one-time upgrade</span>
+              </div>
+              <p className="text-xs text-slate-500 mt-2">
+                Designed for full-time teachers aiming to reach more students.
+              </p>
+
+              <ul className="mt-6 space-y-3 text-xs text-slate-600 border-t border-slate-100 pt-6">
+                <li className="flex items-center">
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  <strong>Unlimited</strong> tuition batch postings
+                </li>
+                <li className="flex items-center">
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  Verified Pro Tutor Badge next to your profile
+                </li>
+                <li className="flex items-center">
+                  <span className="text-emerald-600 font-bold mr-2">✓</span>
+                  Direct student applicant management
+                </li>
+              </ul>
+            </div>
+
+            <div className="mt-8">
+              <Link
+                href="/pricing"
+                className="w-full block text-center py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
+              >
+                Upgrade Tutor ($15)
+              </Link>
+            </div>
+          </motion.div>
+
         </div>
       </div>
     </section>

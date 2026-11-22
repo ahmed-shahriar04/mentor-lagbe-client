@@ -1,10 +1,33 @@
-import Link from 'next/link';
+'use client';
 
-export default function TuitionCard({ tuition }) {
+import { useState } from 'react';
+import Link from 'next/link';
+import { motion } from 'framer-motion';
+
+export default function TuitionCard({ tuition, index = 0 }) {
+  const [imgError, setImgError] = useState(false);
+
   if (!tuition) return null;
 
+  // Stagger calculation: (index % 3) * 0.15s ensures each card in a 3-column grid fades in one-by-one!
+  const delay = (index % 3) * 0.15;
+
+  // Real mentor image only
+  const tutorAvatar = tuition.tutorImage || tuition.tutorPhoto || (tuition.tutor && tuition.tutor.image);
+
   return (
-    <div className="mentor-card flex flex-col h-full overflow-hidden group hover:shadow-xl transition-all duration-300">
+    <motion.div
+      initial={{ opacity: 0, y: 35 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, margin: '-40px' }}
+      transition={{
+        duration: 0.5,
+        delay: delay,
+        ease: [0.25, 0.1, 0.25, 1],
+      }}
+      whileHover={{ y: -6, transition: { duration: 0.2 } }}
+      className="mentor-card flex flex-col h-full overflow-hidden group hover:shadow-2xl transition-all duration-300 bg-white rounded-3xl border border-slate-200"
+    >
       {/* Banner Image */}
       <div className="relative h-48 w-full overflow-hidden bg-slate-100">
         <img
@@ -13,10 +36,10 @@ export default function TuitionCard({ tuition }) {
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
         />
         <div className="absolute top-3 left-3 flex flex-wrap gap-1.5">
-          <span className="badge-role bg-white/95 text-emerald-700 shadow-sm">
+          <span className="badge-role bg-white/95 text-emerald-700 shadow-sm font-semibold">
             {tuition.subject}
           </span>
-          <span className={`badge-role shadow-sm ${
+          <span className={`badge-role shadow-sm font-semibold ${
             tuition.mode === 'Online'
               ? 'bg-blue-600 text-white'
               : 'bg-amber-600 text-white'
@@ -73,20 +96,42 @@ export default function TuitionCard({ tuition }) {
         {/* Tutor info & View Details button */}
         <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
           <div className="flex items-center space-x-2.5 min-w-0">
-            <img
-              src={tuition.tutorImage || tuition.tutorPhoto || (tuition.tutor && tuition.tutor.image) || `https://ui-avatars.com/api/?name=${encodeURIComponent(tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`}
-              alt={tuition.tutorName || 'Tutor'}
-              referrerPolicy="no-referrer"
-              onError={(e) => {
-                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`;
-              }}
-              className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500/20 shadow-sm shrink-0"
-            />
+            <div className="relative shrink-0">
+              {tutorAvatar && !imgError ? (
+                <img
+                  src={tutorAvatar}
+                  alt={tuition.tutorName || 'Tutor'}
+                  referrerPolicy="no-referrer"
+                  onError={() => setImgError(true)}
+                  className="w-9 h-9 rounded-full object-cover ring-2 ring-emerald-500/20 shadow-sm"
+                />
+              ) : (
+                <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-emerald-600 to-green-500 flex items-center justify-center text-white font-bold text-xs shadow-sm ring-2 ring-emerald-500/20">
+                  {(tuition.tutorName || 'M').charAt(0).toUpperCase()}
+                </div>
+              )}
+              {tuition.isProTutor && (
+                <img
+                  src="/pro-badge.svg"
+                  alt="Pro"
+                  className="absolute -bottom-1 -right-1 w-4 h-4 drop-shadow-sm"
+                  title="Verified Pro Mentor"
+                />
+              )}
+            </div>
+
             <div className="flex flex-col min-w-0">
               <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
                 {tuition.tutorName}
               </span>
-              <span className="text-[10px] text-slate-400">Verified Mentor</span>
+              <span className="text-[10px] text-slate-400 flex items-center">
+                Verified Mentor
+                {tuition.isProTutor && (
+                  <span className="ml-1 text-[9px] font-bold text-blue-600 bg-blue-50 px-1 py-0.2 rounded border border-blue-200">
+                    PRO
+                  </span>
+                )}
+              </span>
             </div>
           </div>
 
@@ -98,6 +143,6 @@ export default function TuitionCard({ tuition }) {
           </Link>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
