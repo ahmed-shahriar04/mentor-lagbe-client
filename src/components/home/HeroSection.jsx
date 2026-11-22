@@ -90,37 +90,21 @@ export default function HeroSection() {
             </div>
           </div>
 
-          {/* Hero Image Illustration - Storyset Animated Vector */}
-          <div className="lg:col-span-5 relative flex justify-center items-center">
-            <div className="relative w-full max-w-lg">
-              {/* Decorative background glow */}
-              <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-500/15 via-teal-500/10 to-transparent rounded-3xl blur-2xl -z-10"></div>
-
-              <div className="relative rounded-3xl overflow-hidden p-3 sm:p-5 bg-white/70 backdrop-blur-md border border-emerald-100/80 shadow-2xl transition-all duration-500 hover:shadow-emerald-500/15 hover:shadow-3xl">
-                <object
-                  data="/teacher-student-animate.svg"
-                  type="image/svg+xml"
-                  aria-label="Teacher and student animated tuition illustration"
-                  className="w-full h-auto max-h-[420px] object-contain pointer-events-none"
-                >
-                  <img
-                    src="/teacher-student-animate.svg"
-                    alt="Teacher and student animated tuition illustration"
-                    className="w-full h-auto max-h-[420px] object-contain"
-                  />
-                </object>
-              </div>
-
-              {/* Floating review card */}
-              <div className="absolute -bottom-5 -left-4 bg-white/95 backdrop-blur-md p-3.5 rounded-2xl shadow-xl border border-slate-100 hidden sm:flex items-center space-x-3 transition-transform hover:-translate-y-1">
-                <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-emerald-600 to-green-500 text-white flex items-center justify-center font-bold shadow-md shadow-emerald-500/20">
-                  ★
-                </div>
-                <div>
-                  <p className="text-xs font-bold text-slate-800">BUET & DU Mentors</p>
-                  <p className="text-[10px] text-slate-500">Subject-wise 1-on-1 & Batch Care</p>
-                </div>
-              </div>
+          {/* Hero Illustration - Transparent, Clean & Big */}
+          <div className="lg:col-span-5 flex justify-center items-center w-full">
+            <div className="w-full flex items-center justify-center p-0">
+              <object
+                data="/teacher-student-animate.svg"
+                type="image/svg+xml"
+                aria-label="Teacher and student animated tuition illustration"
+                className="w-full h-auto min-h-[360px] sm:min-h-[460px] lg:min-h-[540px] max-w-none scale-105 sm:scale-115 lg:scale-135 object-contain pointer-events-none"
+              >
+                <img
+                  src="/teacher-student-animate.svg"
+                  alt="Teacher and student animated tuition illustration"
+                  className="w-full h-auto min-h-[360px] sm:min-h-[460px] lg:min-h-[540px] scale-105 sm:scale-115 lg:scale-135 object-contain"
+                />
+              </object>
             </div>
           </div>
         </div>
