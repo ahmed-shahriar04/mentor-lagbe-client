@@ -25,6 +25,7 @@ export default function TuitionDetailsPage() {
   const [studentNote, setStudentNote] = useState('');
   const [submitting, setSubmitting] = useState(false);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [imgError, setImgError] = useState(false);
 
   const toggleDay = (day) => {
     if (selectedDays.includes(day)) {
@@ -40,6 +41,21 @@ export default function TuitionDetailsPage() {
   useEffect(() => {
     const auth = getStoredAuth();
     setUser(auth?.user || null);
+
+    // Live sync user role from database
+    if (auth?.token) {
+      api.getCurrentUser()
+        .then((res) => {
+          if (res?.success && res?.data) {
+            setUser(res.data);
+            if (auth.user && (auth.user.role !== res.data.role || auth.user.plan !== res.data.plan)) {
+              auth.user = { ...auth.user, ...res.data };
+              setStoredAuth(auth);
+            }
+          }
+        })
+        .catch(() => {});
+    }
 
     async function loadData() {
       try {
@@ -265,15 +281,19 @@ export default function TuitionDetailsPage() {
               </span>
               <div className="mt-4 flex items-center space-x-3.5">
                 <div className="relative shrink-0">
-                  <img
-                    src={tutor.image || tuition.tutorImage || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop'}
-                    alt={tutor.name || tuition.tutorName}
-                    referrerPolicy="no-referrer"
-                    onError={(e) => {
-                      e.currentTarget.src = 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=300&auto=format&fit=crop';
-                    }}
-                    className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm"
-                  />
+                  {(tutor.image || tuition.tutorImage) && !imgError ? (
+                    <img
+                      src={tutor.image || tuition.tutorImage}
+                      alt={tutor.name || tuition.tutorName}
+                      referrerPolicy="no-referrer"
+                      onError={() => setImgError(true)}
+                      className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20 shadow-sm"
+                    />
+                  ) : (
+                    <div className="w-14 h-14 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-500 flex items-center justify-center text-white font-extrabold text-xl shadow-sm ring-2 ring-emerald-500/20 shrink-0">
+                      {(tutor.name || tuition.tutorName || 'T').charAt(0).toUpperCase()}
+                    </div>
+                  )}
                   {tutor.plan === 'pro' && (
                     <img
                       src="/pro-badge.svg"
@@ -316,34 +336,45 @@ export default function TuitionDetailsPage() {
                     Sign In to Apply
                   </Link>
                 ) : isStudent ? (
-                  <button
-                    onClick={() => setModalOpen(true)}
-                    className="w-full py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/25 transition transform active:scale-95"
-                  >
-                    Apply for Tuition
-                  </button>
-                ) : (
-                  <div className="p-3 bg-amber-50 rounded-xl border border-amber-200 text-center">
-                    <p className="text-xs font-semibold text-amber-800">
-                      Role Notice: Only Students can apply
-                    </p>
-                    <p className="text-[11px] text-amber-700 mt-0.5">
-                      You are signed in as a {user.role}. Tuition applications are role-restricted for students.
-                    </p>
-                  </div>
-                )}
+                  <>
+                    <button
+                      onClick={() => setModalOpen(true)}
+                      className="w-full py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/25 transition transform active:scale-95"
+                    >
+                      Apply for Tuition
+                    </button>
 
-                {/* Bookmark Action */}
-                {isStudent && (
-                  <button
-                    onClick={handleBookmarkToggle}
-                    className="w-full py-2.5 px-4 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition flex items-center justify-center space-x-2"
-                  >
-                    <svg className={`w-4 h-4 ${isBookmarked ? 'fill-emerald-600 text-emerald-600' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
-                    </svg>
-                    <span>{isBookmarked ? 'Saved in Bookmarks' : 'Bookmark Tuition'}</span>
-                  </button>
+                    {/* Bookmark Action for Students only */}
+                    <button
+                      onClick={handleBookmarkToggle}
+                      className="w-full py-2.5 px-4 text-xs font-semibold text-slate-700 bg-slate-50 hover:bg-slate-100 border border-slate-200 rounded-xl transition flex items-center justify-center space-x-2"
+                    >
+                      <svg className={`w-4 h-4 ${isBookmarked ? 'fill-emerald-600 text-emerald-600' : 'text-slate-400'}`} fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                      </svg>
+                      <span>{isBookmarked ? 'Saved in Bookmarks' : 'Bookmark Tuition'}</span>
+                    </button>
+                  </>
+                ) : (
+                  <div className="p-4 bg-emerald-50/80 rounded-2xl border border-emerald-200 text-center space-y-1.5">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-emerald-800 bg-emerald-100 px-2.5 py-0.5 rounded-full inline-block">
+                      Mentor View
+                    </span>
+                    <p className="text-xs font-bold text-slate-800 mt-1">
+                      Signed in as a Tutor ({user.name})
+                    </p>
+                    <p className="text-[11px] text-slate-600 leading-snug">
+                      Tuition applications and bookmarking are available exclusively for students. You can create and manage your batches in the tutor management portal.
+                    </p>
+                    <div className="pt-1.5">
+                      <Link
+                        href="/dashboard/tutor"
+                        className="inline-block px-4 py-2 text-xs font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl transition shadow-sm"
+                      >
+                        Go to Tutor Portal →
+                      </Link>
+                    </div>
+                  </div>
                 )}
               </div>
             </div>
