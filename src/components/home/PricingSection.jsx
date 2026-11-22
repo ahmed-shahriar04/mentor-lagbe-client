@@ -1,9 +1,24 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { motion } from 'framer-motion';
+import { getStoredAuth } from '@/lib/auth-client';
 
 export default function PricingSection() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const syncAuth = () => {
+      const auth = getStoredAuth();
+      setUser(auth?.user || null);
+    };
+    syncAuth();
+    window.addEventListener('mentorlagbe_auth_change', syncAuth);
+    return () => window.removeEventListener('mentorlagbe_auth_change', syncAuth);
+  }, []);
+
+  const isPro = user?.plan === 'pro';
   return (
     <section className="py-16 sm:py-24 bg-gradient-to-b from-slate-50 to-white border-t border-slate-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -115,12 +130,21 @@ export default function PricingSection() {
             </div>
 
             <div className="mt-8">
-              <Link
-                href="/pricing"
-                className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/25 transition"
-              >
-                Upgrade Student ($10)
-              </Link>
+              {isPro && user?.role === 'student' ? (
+                <div className="w-full py-3.5 px-4 text-center text-sm font-bold text-blue-800 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center space-x-2 shadow-sm select-none">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Already Taken (Active Plan)</span>
+                </div>
+              ) : (
+                <Link
+                  href="/pricing"
+                  className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl shadow-md shadow-blue-500/25 transition"
+                >
+                  Upgrade Student ($10)
+                </Link>
+              )}
             </div>
           </motion.div>
 
@@ -168,12 +192,21 @@ export default function PricingSection() {
             </div>
 
             <div className="mt-8">
-              <Link
-                href="/pricing"
-                className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
-              >
-                Upgrade Tutor ($15)
-              </Link>
+              {isPro && user?.role === 'tutor' ? (
+                <div className="w-full py-3.5 px-4 text-center text-sm font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-center space-x-2 shadow-sm select-none">
+                  <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Already Taken (Active Plan)</span>
+                </div>
+              ) : (
+                <Link
+                  href="/pricing"
+                  className="w-full block text-center py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition"
+                >
+                  Upgrade Tutor ($15)
+                </Link>
+              )}
             </div>
           </motion.div>
 

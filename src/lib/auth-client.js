@@ -12,7 +12,13 @@ export const getStoredAuth = () => {
   try {
     const raw = localStorage.getItem('mentorlagbe_auth');
     if (!raw) return null;
-    return JSON.parse(raw);
+    const parsed = JSON.parse(raw);
+    // Reset mock pro status to free so users can manually test Stripe purchase
+    if (parsed?.user?.plan === 'pro' && !localStorage.getItem('mentorlagbe_pro_paid')) {
+      parsed.user.plan = 'free';
+      localStorage.setItem('mentorlagbe_auth', JSON.stringify(parsed));
+    }
+    return parsed;
   } catch (e) {
     return null;
   }

@@ -35,7 +35,10 @@ export default function PaymentSuccessPage() {
         const res = await api.verifySession(sessionId);
         if (res.success && res.payment) {
           setPayment(res.payment);
-          // Update stored auth to Pro
+          // Set confirmed payment flag and update stored auth to Pro
+          if (typeof window !== 'undefined') {
+            localStorage.setItem('mentorlagbe_pro_paid', 'true');
+          }
           const auth = getStoredAuth();
           if (auth && auth.user) {
             auth.user.plan = 'pro';

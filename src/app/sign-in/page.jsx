@@ -34,7 +34,7 @@ export default function SignInPage() {
         name: email.split('@')[0],
         email,
         role,
-        plan: 'pro',
+        plan: 'free',
         image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop',
       };
 
@@ -42,7 +42,7 @@ export default function SignInPage() {
         email,
         name: mockUser.name,
         role,
-        plan: 'pro',
+        plan: 'free',
         iat: Math.floor(Date.now() / 1000),
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7,
       };

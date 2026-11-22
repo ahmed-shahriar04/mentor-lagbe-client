@@ -156,13 +156,22 @@ export default function PricingPage() {
             </div>
 
             <div className="mt-10">
-              <button
-                onClick={() => handleUpgrade('student')}
-                disabled={loadingRole !== null}
-                className="w-full py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md shadow-blue-500/25 disabled:opacity-50 cursor-pointer"
-              >
-                {loadingRole === 'student' ? 'Connecting to Stripe...' : 'Upgrade Student ($10)'}
-              </button>
+              {isPro && user?.role === 'student' ? (
+                <div className="w-full py-3.5 px-4 text-center text-sm font-bold text-blue-800 bg-blue-50 border border-blue-200 rounded-xl flex items-center justify-center space-x-2 shadow-sm select-none">
+                  <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Already Taken (Active Plan)</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleUpgrade('student')}
+                  disabled={loadingRole !== null}
+                  className="w-full py-3.5 px-4 text-sm font-bold text-white bg-blue-600 hover:bg-blue-700 rounded-xl transition shadow-md shadow-blue-500/25 disabled:opacity-50 cursor-pointer"
+                >
+                  {loadingRole === 'student' ? 'Connecting to Stripe...' : 'Upgrade Student ($10)'}
+                </button>
+              )}
             </div>
           </div>
 
@@ -209,13 +218,22 @@ export default function PricingPage() {
             </div>
 
             <div className="mt-10">
-              <button
-                onClick={() => handleUpgrade('tutor')}
-                disabled={loadingRole !== null}
-                className="w-full py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/30 transition disabled:opacity-50 cursor-pointer"
-              >
-                {loadingRole === 'tutor' ? 'Connecting to Stripe...' : 'Upgrade Pro Tutor ($15)'}
-              </button>
+              {isPro && user?.role === 'tutor' ? (
+                <div className="w-full py-3.5 px-4 text-center text-sm font-bold text-emerald-800 bg-emerald-50 border border-emerald-200 rounded-xl flex items-center justify-center space-x-2 shadow-sm select-none">
+                  <svg className="w-4 h-4 text-emerald-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                  </svg>
+                  <span>Already Taken (Active Plan)</span>
+                </div>
+              ) : (
+                <button
+                  onClick={() => handleUpgrade('tutor')}
+                  disabled={loadingRole !== null}
+                  className="w-full py-3.5 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/30 transition disabled:opacity-50 cursor-pointer"
+                >
+                  {loadingRole === 'tutor' ? 'Connecting to Stripe...' : 'Upgrade Pro Tutor ($15)'}
+                </button>
+              )}
             </div>
           </div>
 
