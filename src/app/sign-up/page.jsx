@@ -1,0 +1,171 @@
+'use client';
+
+import { useState } from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { setStoredAuth } from '@/lib/auth-client';
+import toast from 'react-hot-toast';
+
+export default function SignUpPage() {
+  const router = useRouter();
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [role, setRole] = useState('student');
+  const [loading, setLoading] = useState(false);
+
+  const handleSignUp = async (e) => {
+    e.preventDefault();
+
+    if (!name.trim()) return toast.error('Full Name is required');
+    if (!email.trim() || !email.includes('@')) return toast.error('Valid email address is required');
+    if (password.length < 6) return toast.error('Password must be at least 6 characters');
+
+    setLoading(true);
+    try {
+      const newUser = {
+        name: name.trim(),
+        email: email.trim(),
+        role: role,
+        plan: 'free',
+        image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop',
+      };
+
+      const fakeToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({
+        email: newUser.email,
+        name: newUser.name,
+        role: newUser.role,
+        plan: 'free',
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
+      }))}.signature`;
+
+      setStoredAuth({
+        user: newUser,
+        token: fakeToken,
+      });
+
+      toast.success(`Account created as ${role}!`);
+
+      if (role === 'tutor') {
+        router.push('/dashboard/tutor');
+      } else {
+        router.push('/dashboard/student');
+      }
+    } catch (err) {
+      toast.error(err.message || 'Sign up failed');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="min-h-[85vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8 bg-slate-50">
+      <div className="max-w-md w-full bg-white rounded-3xl p-8 border border-slate-200 shadow-sm">
+        <div className="text-center mb-8">
+          <div className="w-12 h-12 rounded-2xl bg-gradient-to-tr from-emerald-600 to-green-500 text-white flex items-center justify-center mx-auto mb-3 shadow-md shadow-emerald-500/20 font-bold text-xl">
+            M
+          </div>
+          <h2 className="text-2xl font-extrabold text-slate-900 font-heading">
+            Create an Account
+          </h2>
+          <p className="text-xs text-slate-500 mt-1">
+            Choose your role and get started on MentorLagbe
+          </p>
+        </div>
+
+        <form onSubmit={handleSignUp} className="space-y-4">
+          {/* Role Selection */}
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-2">
+              Select Your Role *
+            </label>
+            <div className="grid grid-cols-2 gap-3">
+              <button
+                type="button"
+                onClick={() => setRole('student')}
+                className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition ${
+                  role === 'student'
+                    ? 'border-emerald-600 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-500/20'
+                    : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <span>🎓</span>
+                <span>Student</span>
+              </button>
+              <button
+                type="button"
+                onClick={() => setRole('tutor')}
+                className={`py-3 px-4 rounded-xl border text-xs font-bold flex items-center justify-center space-x-2 transition ${
+                  role === 'tutor'
+                    ? 'border-emerald-600 bg-emerald-50 text-emerald-800 ring-2 ring-emerald-500/20'
+                    : 'border-slate-200 bg-slate-50 text-slate-600 hover:bg-slate-100'
+                }`}
+              >
+                <span>👨‍🏫</span>
+                <span>Tutor / Mentor</span>
+              </button>
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Full Name *
+            </label>
+            <input
+              type="text"
+              required
+              placeholder="e.g. Sadia Rahman"
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Email Address *
+            </label>
+            <input
+              type="email"
+              required
+              placeholder="student@example.com"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Password (Min 6 characters) *
+            </label>
+            <input
+              type="password"
+              required
+              minLength={6}
+              placeholder="••••••••"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md shadow-emerald-600/30 transition transform active:scale-95 disabled:opacity-50"
+          >
+            {loading ? 'Creating Account...' : `Register as ${role === 'tutor' ? 'Tutor' : 'Student'}`}
+          </button>
+        </form>
+
+        <div className="mt-6 pt-6 border-t border-slate-100 text-center text-xs text-slate-500">
+          Already have an account?{' '}
+          <Link href="/sign-in" className="font-bold text-emerald-600 hover:text-emerald-700">
+            Sign In here
+          </Link>
+        </div>
+      </div>
+    </div>
+  );
+}
