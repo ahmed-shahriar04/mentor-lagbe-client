@@ -72,12 +72,18 @@ export default function TuitionCard({ tuition }) {
 
         {/* Tutor info & View Details button */}
         <div className="mt-5 pt-4 border-t border-slate-100 flex items-center justify-between">
-          <div className="flex items-center space-x-2">
-            <div className="w-7 h-7 rounded-full bg-emerald-100 text-emerald-800 font-bold flex items-center justify-center text-xs">
-              {tuition.tutorName?.charAt(0) || 'T'}
-            </div>
-            <div className="flex flex-col">
-              <span className="text-xs font-semibold text-slate-800 line-clamp-1 max-w-[110px]">
+          <div className="flex items-center space-x-2.5 min-w-0">
+            <img
+              src={tuition.tutorImage || tuition.tutorPhoto || (tuition.tutor && tuition.tutor.image) || `https://ui-avatars.com/api/?name=${encodeURIComponent(tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`}
+              alt={tuition.tutorName || 'Tutor'}
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`;
+              }}
+              className="w-8 h-8 rounded-full object-cover ring-2 ring-emerald-500/20 shadow-sm shrink-0"
+            />
+            <div className="flex flex-col min-w-0">
+              <span className="text-xs font-bold text-slate-800 truncate max-w-[120px]">
                 {tuition.tutorName}
               </span>
               <span className="text-[10px] text-slate-400">Verified Mentor</span>
@@ -86,7 +92,7 @@ export default function TuitionCard({ tuition }) {
 
           <Link
             href={`/tuitions/${tuition._id}`}
-            className="px-3 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition shadow-sm"
+            className="px-3.5 py-1.5 text-xs font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-lg transition shadow-sm shrink-0"
           >
             View Details
           </Link>

@@ -139,8 +139,12 @@ export default function Navbar() {
                   className="relative group p-0.5 rounded-full ring-2 ring-emerald-500/40 hover:ring-emerald-600 transition"
                 >
                   <img
-                    src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
+                    src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=059669&color=fff&bold=true`}
                     alt={user.name || 'User Profile'}
+                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=059669&color=fff&bold=true`;
+                    }}
                     className="w-9 h-9 sm:w-10 sm:h-10 rounded-full object-cover"
                   />
                   {user.plan === 'pro' && (
@@ -178,8 +182,12 @@ export default function Navbar() {
                 className="flex items-center space-x-3 flex-1"
               >
                 <img
-                  src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
+                  src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=059669&color=fff&bold=true`}
                   alt={user.name}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=059669&color=fff&bold=true`;
+                  }}
                   className="w-10 h-10 rounded-full object-cover ring-2 ring-emerald-500/30"
                 />
                 <div className="flex-1 min-w-0">

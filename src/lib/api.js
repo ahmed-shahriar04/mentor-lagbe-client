@@ -73,8 +73,10 @@ export const api = {
   // Users & Profile
   getCurrentUser: () => fetchApi('/users/me'),
   updateProfile: (profileData) => fetchApi('/users/profile', { method: 'PATCH', body: JSON.stringify(profileData) }),
+  deleteMyAccount: () => fetchApi('/users/profile/me', { method: 'DELETE' }),
   getAllUsers: () => fetchApi('/users'),
   updateUserRole: (id, role) => fetchApi(`/users/${id}/role`, { method: 'PATCH', body: JSON.stringify({ role }) }),
+  deleteUser: (id) => fetchApi(`/users/${id}`, { method: 'DELETE' }),
   getAdminStats: () => fetchApi('/users/admin/stats'),
 
   // Bookmarks

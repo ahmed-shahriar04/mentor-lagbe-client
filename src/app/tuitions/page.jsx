@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import TuitionCard from '@/components/TuitionCard';
+import { TuitionCardSkeleton } from '@/components/SkeletonLoader';
 import { api } from '@/lib/api';
 
 export default function BrowseTuitionsPage() {
@@ -189,12 +190,7 @@ export default function BrowseTuitionsPage() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-96 rounded-2xl bg-white animate-pulse border border-slate-200 p-5">
-                <div className="h-44 bg-slate-200 rounded-xl mb-4"></div>
-                <div className="h-5 bg-slate-200 rounded w-3/4 mb-3"></div>
-                <div className="h-4 bg-slate-200 rounded w-1/2 mb-4"></div>
-                <div className="h-10 bg-slate-100 rounded-lg mt-auto"></div>
-              </div>
+              <TuitionCardSkeleton key={i} />
             ))}
           </div>
         ) : tuitions.length > 0 ? (

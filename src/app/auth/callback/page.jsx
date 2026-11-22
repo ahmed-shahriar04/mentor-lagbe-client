@@ -36,19 +36,41 @@ export default function GoogleOAuthCallback() {
         // Fetch Google user profile
         let googleUser = null;
         if (accessToken) {
-          const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
-            headers: {
-              Authorization: `Bearer ${accessToken}`,
-            },
-          });
-          if (res.ok) {
-            googleUser = await res.json();
+          try {
+            const res = await fetch('https://www.googleapis.com/oauth2/v3/userinfo', {
+              headers: {
+                Authorization: `Bearer ${accessToken}`,
+              },
+            });
+            if (res.ok) {
+              googleUser = await res.json();
+            }
+          } catch (e) {
+            console.error('Failed to fetch userinfo with accessToken:', e);
+          }
+        }
+
+        // Decode id_token for picture, name, and email
+        if (idToken) {
+          try {
+            const base64Url = idToken.split('.')[1];
+            const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+            const jsonPayload = decodeURIComponent(
+              atob(base64)
+                .split('')
+                .map((c) => '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2))
+                .join('')
+            );
+            const parsed = JSON.parse(jsonPayload);
+            googleUser = { ...parsed, ...googleUser, picture: googleUser?.picture || parsed.picture };
+          } catch (e) {
+            console.error('Failed to parse id_token:', e);
           }
         }
 
         const email = googleUser?.email || 'google_user@mentorlagbe.com';
         const name = googleUser?.name || email.split('@')[0];
-        const image = googleUser?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0284c7&color=fff`;
+        const image = googleUser?.picture || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=059669&color=fff&bold=true`;
 
         // Check selected role
         const savedRole = sessionStorage.getItem('mentorlagbe_oauth_role') || 'student';

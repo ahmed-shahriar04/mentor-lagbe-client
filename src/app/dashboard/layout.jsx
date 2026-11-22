@@ -133,8 +133,12 @@ export default function DashboardLayout({ children }) {
           <div className="p-6 border-b border-slate-100 flex items-center space-x-3">
             <Link href="/dashboard/profile" title="Edit Profile">
               <img
-                src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
+                src={user.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(user.name || 'User')}&background=059669&color=fff&bold=true`}
                 alt={user.name}
+                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(user?.name || 'User')}&background=059669&color=fff&bold=true`;
+                }}
                 className="w-11 h-11 rounded-2xl object-cover ring-2 ring-emerald-500/20 hover:ring-emerald-500 transition"
               />
             </Link>

@@ -1,12 +1,14 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
-import { getStoredAuth, setStoredAuth } from '@/lib/auth-client';
+import { getStoredAuth, setStoredAuth, clearStoredAuth } from '@/lib/auth-client';
 import { uploadToImgBB } from '@/lib/imgbb';
 import toast from 'react-hot-toast';
 
 export default function ProfilePage() {
+  const router = useRouter();
   const [user, setUser] = useState(null);
   const [name, setName] = useState('');
   const [phone, setPhone] = useState('');
@@ -14,6 +16,7 @@ export default function ProfilePage() {
   const [image, setImage] = useState('');
   const [uploadingImage, setUploadingImage] = useState(false);
   const [saving, setSaving] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     const auth = getStoredAuth();
@@ -71,97 +74,143 @@ export default function ProfilePage() {
     }
   };
 
+  const handleDeleteAccount = async () => {
+    const confirm = window.confirm(
+      'Are you sure you want to permanently delete your account? All your data, applications, and tuitions will be removed. This action CANNOT be undone.'
+    );
+    if (!confirm) return;
+
+    setDeleting(true);
+    try {
+      await api.deleteMyAccount();
+      clearStoredAuth();
+      toast.success('Your account has been permanently deleted.');
+      router.push('/');
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete account');
+      setDeleting(false);
+    }
+  };
+
   return (
-    <div className="max-w-2xl bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
-      <div className="mb-6">
-        <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 font-heading">
-          Personal Information
-        </span>
-        <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight font-heading mt-1">
-          Update Profile
-        </h1>
-        <p className="text-xs text-slate-500 mt-1">
-          Keep your contact information and photo updated so mentors and students can connect with you.
-        </p>
+    <div className="space-y-8 max-w-2xl">
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200 shadow-sm">
+        <div className="mb-6">
+          <span className="text-xs font-bold uppercase tracking-wider text-emerald-600 font-heading">
+            Personal Information
+          </span>
+          <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight font-heading mt-1">
+            Update Profile
+          </h1>
+          <p className="text-xs text-slate-500 mt-1">
+            Keep your contact information and photo updated so mentors and students can connect with you.
+          </p>
+        </div>
+
+        <form onSubmit={handleSaveProfile} className="space-y-5">
+          {/* Profile Avatar & ImgBB direct file upload */}
+          <div className="flex items-center space-x-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+            <img
+              src={image || `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=059669&color=fff&bold=true`}
+              alt="Profile Avatar"
+              referrerPolicy="no-referrer"
+              onError={(e) => {
+                e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(name || 'User')}&background=059669&color=fff&bold=true`;
+              }}
+              className="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-500/20"
+            />
+            <div className="space-y-1">
+              <label className="block text-xs font-bold text-slate-800">
+                Upload Profile Picture (ImgBB API)
+              </label>
+              <input
+                type="file"
+                accept="image/*"
+                onChange={handleProfileImageUpload}
+                className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white file:text-slate-700 hover:file:bg-slate-100 cursor-pointer"
+              />
+              {uploadingImage && (
+                <p className="text-[11px] text-emerald-600 font-semibold animate-pulse">
+                  Uploading to ImgBB...
+                </p>
+              )}
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
+            <input
+              type="text"
+              required
+              value={name}
+              onChange={(e) => setName(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Email (Cannot be changed)</label>
+            <input
+              type="email"
+              disabled
+              value={user?.email || ''}
+              className="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
+            <input
+              type="tel"
+              placeholder="+8801XXXXXXXXX"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">Bio / Academic Background</label>
+            <textarea
+              rows="3"
+              placeholder="Introduce your institution, graduation subject, or learning goals..."
+              value={bio}
+              onChange={(e) => setBio(e.target.value)}
+              className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
+            ></textarea>
+          </div>
+
+          <button
+            type="submit"
+            disabled={saving}
+            className="w-full py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition disabled:opacity-50"
+          >
+            {saving ? 'Saving...' : 'Save Profile Changes'}
+          </button>
+        </form>
       </div>
 
-      <form onSubmit={handleSaveProfile} className="space-y-5">
-        {/* Profile Avatar & ImgBB direct file upload */}
-        <div className="flex items-center space-x-5 p-4 rounded-2xl bg-slate-50 border border-slate-100">
-          <img
-            src={image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=150&auto=format&fit=crop'}
-            alt="Profile Avatar"
-            className="w-16 h-16 rounded-2xl object-cover ring-2 ring-emerald-500/20"
-          />
-          <div className="space-y-1">
-            <label className="block text-xs font-bold text-slate-800">
-              Upload Profile Picture (ImgBB API)
-            </label>
-            <input
-              type="file"
-              accept="image/*"
-              onChange={handleProfileImageUpload}
-              className="text-xs text-slate-500 file:mr-3 file:py-1.5 file:px-3 file:rounded-xl file:border-0 file:text-xs file:font-semibold file:bg-white file:text-slate-700 hover:file:bg-slate-100 cursor-pointer"
-            />
-            {uploadingImage && (
-              <p className="text-[11px] text-emerald-600 font-semibold animate-pulse">
-                Uploading to ImgBB...
-              </p>
-            )}
+      {/* Danger Zone: Delete Account */}
+      <div className="bg-white rounded-3xl p-6 sm:p-8 border border-red-200/80 shadow-sm">
+        <div className="flex items-center justify-between">
+          <div>
+            <h3 className="text-sm font-bold text-red-600 font-heading">
+              Danger Zone
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Permanently delete your account and associated platform data.
+            </p>
           </div>
+          <button
+            type="button"
+            onClick={handleDeleteAccount}
+            disabled={deleting}
+            className="px-4 py-2 text-xs font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 rounded-xl transition shadow-sm disabled:opacity-50"
+          >
+            {deleting ? 'Deleting...' : 'Delete Account'}
+          </button>
         </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Full Name</label>
-          <input
-            type="text"
-            required
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Email (Cannot be changed)</label>
-          <input
-            type="email"
-            disabled
-            value={user?.email || ''}
-            className="w-full px-4 py-2.5 bg-slate-100 border border-slate-200 rounded-xl text-sm text-slate-500 cursor-not-allowed"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Phone Number</label>
-          <input
-            type="tel"
-            placeholder="+8801XXXXXXXXX"
-            value={phone}
-            onChange={(e) => setPhone(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
-          />
-        </div>
-
-        <div>
-          <label className="block text-xs font-semibold text-slate-700 mb-1">Bio / Academic Background</label>
-          <textarea
-            rows="3"
-            placeholder="Introduce your institution, graduation subject, or learning goals..."
-            value={bio}
-            onChange={(e) => setBio(e.target.value)}
-            className="w-full px-4 py-2.5 bg-slate-50 border border-slate-200 rounded-xl text-sm focus:ring-2 focus:ring-emerald-500/20 focus:border-emerald-600 outline-none"
-          ></textarea>
-        </div>
-
-        <button
-          type="submit"
-          disabled={saving}
-          className="w-full py-3 px-4 text-sm font-bold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-md transition disabled:opacity-50"
-        >
-          {saving ? 'Saving...' : 'Save Profile Changes'}
-        </button>
-      </form>
+      </div>
     </div>
   );
 }

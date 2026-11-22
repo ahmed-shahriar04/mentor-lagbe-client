@@ -33,6 +33,19 @@ export default function AdminUsersPage() {
     }
   };
 
+  const handleDeleteUser = async (userId, userName) => {
+    const confirm = window.confirm(`Are you sure you want to remove user "${userName}"?`);
+    if (!confirm) return;
+
+    try {
+      await api.deleteUser(userId);
+      toast.success(`User ${userName} removed successfully`);
+      loadUsers();
+    } catch (err) {
+      toast.error(err.message || 'Failed to delete user');
+    }
+  };
+
   return (
     <div className="space-y-6">
       <div>
@@ -40,7 +53,7 @@ export default function AdminUsersPage() {
           User Management
         </h1>
         <p className="text-xs text-slate-500 mt-1">
-          View all registered users and assign role permissions ('student', 'tutor', 'admin').
+          View all registered users, assign role permissions ('student', 'tutor', 'admin'), or remove accounts.
         </p>
       </div>
 
@@ -56,7 +69,8 @@ export default function AdminUsersPage() {
                   <th className="px-5 py-3.5">Email</th>
                   <th className="px-5 py-3.5">Plan</th>
                   <th className="px-5 py-3.5">Current Role</th>
-                  <th className="px-5 py-3.5 text-right">Assign Role</th>
+                  <th className="px-5 py-3.5">Assign Role</th>
+                  <th className="px-5 py-3.5 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -64,8 +78,12 @@ export default function AdminUsersPage() {
                   <tr key={u._id} className="hover:bg-slate-50/50">
                     <td className="px-5 py-4 font-semibold text-slate-800 flex items-center space-x-2.5">
                       <img
-                        src={u.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=80&auto=format&fit=crop'}
+                        src={u.image || `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name || 'User')}&background=059669&color=fff&bold=true`}
                         alt={u.name}
+                        referrerPolicy="no-referrer"
+                        onError={(e) => {
+                          e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(u.name || 'User')}&background=059669&color=fff&bold=true`;
+                        }}
                         className="w-7 h-7 rounded-full object-cover"
                       />
                       <span>{u.name}</span>
@@ -79,7 +97,7 @@ export default function AdminUsersPage() {
                       </span>
                     </td>
                     <td className="px-5 py-4 font-bold uppercase text-slate-700">{u.role}</td>
-                    <td className="px-5 py-4 text-right">
+                    <td className="px-5 py-4">
                       <select
                         value={u.role}
                         onChange={(e) => handleRoleChange(u._id, e.target.value)}
@@ -89,6 +107,14 @@ export default function AdminUsersPage() {
                         <option value="tutor">tutor</option>
                         <option value="admin">admin</option>
                       </select>
+                    </td>
+                    <td className="px-5 py-4 text-right">
+                      <button
+                        onClick={() => handleDeleteUser(u._id, u.name)}
+                        className="px-2.5 py-1 text-[11px] font-bold text-red-600 hover:text-white bg-red-50 hover:bg-red-600 border border-red-200 rounded-lg transition"
+                      >
+                        Delete
+                      </button>
                     </td>
                   </tr>
                 ))}

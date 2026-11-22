@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import { uploadToImgBB } from '@/lib/imgbb';
+import { TableSkeleton } from '@/components/SkeletonLoader';
 import toast from 'react-hot-toast';
 import Link from 'next/link';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -139,7 +140,7 @@ export default function MyTuitionsPage() {
       </div>
 
       {loading ? (
-        <div className="h-64 bg-white rounded-2xl animate-pulse border border-slate-200"></div>
+        <TableSkeleton rows={5} cols={6} />
       ) : tuitions.length > 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">

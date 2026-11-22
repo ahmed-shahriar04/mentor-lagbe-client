@@ -1,4 +1,39 @@
+'use client';
+
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
+
+function AnimatedCounter({ target, duration = 1800, suffix = '', decimals = 0 }) {
+  const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    let startTime = null;
+    let animId;
+
+    const animate = (timestamp) => {
+      if (!startTime) startTime = timestamp;
+      const progress = Math.min((timestamp - startTime) / duration, 1);
+      // easeOutExpo for ultra smooth acceleration & soft deceleration
+      const ease = progress === 1 ? 1 : 1 - Math.pow(2, -10 * progress);
+      const current = ease * target;
+      setCount(decimals > 0 ? parseFloat(current.toFixed(decimals)) : Math.floor(current));
+
+      if (progress < 1) {
+        animId = requestAnimationFrame(animate);
+      }
+    };
+
+    animId = requestAnimationFrame(animate);
+    return () => cancelAnimationFrame(animId);
+  }, [target, duration, decimals]);
+
+  return (
+    <span>
+      {count.toLocaleString()}
+      {suffix}
+    </span>
+  );
+}
 
 export default function HeroSection() {
   return (
@@ -7,7 +42,7 @@ export default function HeroSection() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           {/* Headline & CTAs */}
           <div className="lg:col-span-7 space-y-6 text-center lg:text-left">
-            <div className="inline-flex items-center space-x-2 px-3 py-1 rounded-full bg-emerald-100/70 text-emerald-800 text-xs font-semibold">
+            <div className="inline-flex items-center space-x-2 px-3.5 py-1.5 rounded-full bg-emerald-100/70 text-emerald-800 text-xs font-bold border border-emerald-200/50 shadow-sm animate-fade-in">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
               <span>Smart Tuition & Mentorship Platform</span>
             </div>
@@ -20,30 +55,37 @@ export default function HeroSection() {
             <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start space-y-3 sm:space-y-0 sm:space-x-4 pt-2">
               <Link
                 href="/tuitions"
-                className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/25 transition transform hover:-translate-y-0.5 text-center"
+                className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold text-white bg-emerald-600 hover:bg-emerald-700 rounded-xl shadow-lg shadow-emerald-600/25 transition-all duration-300 transform hover:-translate-y-1 hover:shadow-xl text-center"
               >
                 Browse All Tuitions
               </Link>
               <Link
                 href="/sign-up"
-                className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl transition text-center"
+                className="w-full sm:w-auto px-7 py-3.5 text-base font-semibold text-slate-700 bg-white border border-slate-200 hover:bg-slate-50 hover:border-slate-300 rounded-xl transition-all duration-300 transform hover:-translate-y-1 text-center shadow-sm"
               >
                 Register as a Tutor
               </Link>
             </div>
-            {/* Quick stats mini-bar */}
+
+            {/* Quick stats mini-bar with Animated Count-up Numbers */}
             <div className="pt-6 grid grid-cols-3 gap-4 max-w-md mx-auto lg:mx-0 border-t border-slate-200/80">
-              <div>
-                <p className="text-2xl font-extrabold text-slate-900 font-heading">500+</p>
-                <p className="text-xs text-slate-500">Verified Tutors</p>
+              <div className="group transition-transform hover:-translate-y-0.5">
+                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading tracking-tight">
+                  <AnimatedCounter target={500} suffix="+" />
+                </p>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">Verified Tutors</p>
               </div>
-              <div>
-                <p className="text-2xl font-extrabold text-slate-900 font-heading">12,000+</p>
-                <p className="text-xs text-slate-500">Enrolled Students</p>
+              <div className="group transition-transform hover:-translate-y-0.5">
+                <p className="text-2xl sm:text-3xl font-extrabold text-slate-900 font-heading tracking-tight">
+                  <AnimatedCounter target={12000} suffix="+" />
+                </p>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">Enrolled Students</p>
               </div>
-              <div>
-                <p className="text-2xl font-extrabold text-slate-900 font-heading">99.4%</p>
-                <p className="text-xs text-slate-500">Satisfaction Rate</p>
+              <div className="group transition-transform hover:-translate-y-0.5">
+                <p className="text-2xl sm:text-3xl font-extrabold text-emerald-600 font-heading tracking-tight">
+                  <AnimatedCounter target={99.4} decimals={1} suffix="%" />
+                </p>
+                <p className="text-xs text-slate-500 font-medium mt-0.5">Satisfaction Rate</p>
               </div>
             </div>
           </div>
@@ -51,15 +93,15 @@ export default function HeroSection() {
           {/* Hero Image Illustration */}
           <div className="lg:col-span-5 relative flex justify-center">
             <div className="relative w-full max-w-md lg:max-w-none">
-              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white">
+              <div className="relative rounded-3xl overflow-hidden shadow-2xl border-4 border-white transition-all duration-500 hover:shadow-emerald-500/10 hover:shadow-3xl">
                 <img
                   src="https://images.unsplash.com/photo-1523240795612-9a054b0db644?q=80&w=800&auto=format&fit=crop"
                   alt="Students learning and receiving mentorship"
-                  className="w-full h-80 sm:h-96 object-cover"
+                  className="w-full h-80 sm:h-96 object-cover hover:scale-105 transition-transform duration-700"
                 />
               </div>
               {/* Floating review card */}
-              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 hidden sm:flex items-center space-x-3">
+              <div className="absolute -bottom-6 -left-6 bg-white p-4 rounded-2xl shadow-xl border border-slate-100 hidden sm:flex items-center space-x-3 transition-transform hover:-translate-y-1">
                 <div className="w-10 h-10 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
                   ★
                 </div>

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import TuitionCard from '@/components/TuitionCard';
+import { TuitionCardSkeleton } from '@/components/SkeletonLoader';
 import { api } from '@/lib/api';
 
 export default function FeaturedTuitions() {
@@ -56,7 +57,7 @@ export default function FeaturedTuitions() {
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="h-96 rounded-2xl bg-slate-100 animate-pulse border border-slate-200"></div>
+              <TuitionCardSkeleton key={i} />
             ))}
           </div>
         ) : tuitions.length > 0 ? (

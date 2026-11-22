@@ -248,8 +248,12 @@ export default function TuitionDetailsPage() {
               </span>
               <div className="mt-4 flex items-center space-x-3.5">
                 <img
-                  src={tutor.image || 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?q=80&w=150&auto=format&fit=crop'}
+                  src={tutor.image || tuition.tutorImage || `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.name || tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`}
                   alt={tutor.name || tuition.tutorName}
+                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    e.currentTarget.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(tutor.name || tuition.tutorName || 'Tutor')}&background=059669&color=fff&bold=true`;
+                  }}
                   className="w-14 h-14 rounded-2xl object-cover ring-2 ring-emerald-500/20"
                 />
                 <div>

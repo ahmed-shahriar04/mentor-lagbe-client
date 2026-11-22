@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
+import { TableSkeleton } from '@/components/SkeletonLoader';
 import toast from 'react-hot-toast';
 
 export default function StudentMyApplicationsPage() {
@@ -46,7 +47,7 @@ export default function StudentMyApplicationsPage() {
       </div>
 
       {loading ? (
-        <div className="h-48 bg-white rounded-2xl animate-pulse border border-slate-200"></div>
+        <TableSkeleton rows={4} cols={5} />
       ) : applications.length > 0 ? (
         <div className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
           <div className="overflow-x-auto">
