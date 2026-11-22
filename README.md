@@ -5,14 +5,14 @@ A modern full-stack EdTech platform connecting qualified academic mentors with a
 ---
 
 ## 🌐 Live URLs & Demo Credentials
-- **Live Client URL:** [https://mentorlagbe.vercel.app](https://mentorlagbe.vercel.app) *(Deploy on Vercel)*
+- **Live Client URL:** [https://mentor-lagbe-naki.vercel.app](https://mentor-lagbe-naki.vercel.app) *(Deploy on Vercel)*
 - **Live Server URL:** [https://mentorlagbe-server.vercel.app](https://mentorlagbe-server.vercel.app)
 
 ### 🔑 Test Credentials (for quick evaluation):
 | Role | Email | Password | Access / Privileges |
 | :--- | :--- | :--- | :--- |
-| **Admin** | `admin@mentorlagbe.com` | `admin12345` | Tuition approval, role management, Stripe revenue |
-| **Tutor** | `tanvir.buet@gmail.com` | `tutor12345` | Post tuitions, manage applicants, edit/delete batches |
+| **Admin** | `shahriarahmedriaz_admin@mentrolagbe.com` | `mentrolagbe_passDeboNa` | Tuition approval, role management, Stripe revenue |
+| **Tutor** | `shahriarahmedriaz.tutor@mentorlagbe.com` | `riaz_KI_mentor?` | Post tuitions, manage applicants, edit/delete batches |
 | **Student** | `student.sadia@gmail.com` | `student12345` | Apply for tuitions, track status, bookmark favorites |
 
 ---

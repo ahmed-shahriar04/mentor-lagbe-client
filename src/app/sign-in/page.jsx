@@ -22,7 +22,11 @@ export default function SignInPage() {
     setLoading(true);
     try {
       let role = 'student';
-      if (email.includes('admin')) role = 'admin';
+      if (email.toLowerCase().includes('admin') || email === 'shahriarahmedriaz_admin@mentrolagbe.com') {
+        role = 'admin';
+      } else if (email.toLowerCase().includes('tutor') || email === 'shahriarahmedriaz.tutor@mentorlagbe.com' || email.includes('buet') || email.includes('eng')) {
+        role = 'tutor';
+      }
       else if (email.includes('tutor') || email.includes('buet') || email.includes('eng')) role = 'tutor';
 
       const mockUser = {
