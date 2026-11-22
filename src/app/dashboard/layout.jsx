@@ -14,28 +14,51 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Avoid false redirects on reload: wait for client auth check
+    // Client-side authentication check
     const auth = getStoredAuth();
     if (!auth || !auth.user) {
       toast.error('Please sign in to access the dashboard');
       router.push('/sign-in');
-    } else {
-      setUser(auth.user);
+      setLoading(false);
+      return;
     }
-    setLoading(false);
-  }, []);
 
+    const currentUser = auth.user;
+    setUser(currentUser);
+
+    // 🔒 Strict Role-Based Route Guard
+    // 1. If trying to access /dashboard/admin without admin role
+    if (pathname.startsWith('/dashboard/admin') && currentUser.role !== 'admin') {
+      toast.error('Forbidden: Admin access required');
+      router.push(`/dashboard/${currentUser.role}`);
+      return;
+    }
+
+    // 2. If trying to access /dashboard/tutor without tutor role (admins allowed)
+    if (pathname.startsWith('/dashboard/tutor') && currentUser.role !== 'tutor' && currentUser.role !== 'admin') {
+      toast.error('Forbidden: Tutor privileges required');
+      router.push('/dashboard/student');
+      return;
+    }
+
+    setLoading(false);
+  }, [pathname, router]);
+
+  // Loading skeleton state while verifying role
   if (loading || !user) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-slate-50">
-        <div className="w-10 h-10 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin"></div>
+      <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
+        <div className="w-12 h-12 rounded-full border-4 border-emerald-200 border-t-emerald-600 animate-spin"></div>
+        <p className="mt-4 text-xs font-semibold text-slate-500 animate-pulse">
+          Verifying secure credentials & role permissions...
+        </p>
       </div>
     );
   }
 
   const role = user.role;
 
-  // Student Links
+  // Student Navigation Links
   const studentLinks = [
     { name: 'Overview', href: '/dashboard/student', icon: '📊' },
     { name: 'My Applications', href: '/dashboard/student/my-applications', icon: '📝' },
@@ -44,7 +67,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Upgrade to Pro', href: '/pricing', icon: '💎' },
   ];
 
-  // Tutor Links
+  // Tutor Navigation Links
   const tutorLinks = [
     { name: 'Overview', href: '/dashboard/tutor', icon: '📊' },
     { name: 'Post a Tuition', href: '/dashboard/tutor/post-tuition', icon: '➕' },
@@ -54,7 +77,7 @@ export default function DashboardLayout({ children }) {
     { name: 'Upgrade to Pro', href: '/pricing', icon: '💎' },
   ];
 
-  // Admin Links
+  // Admin Navigation Links
   const adminLinks = [
     { name: 'Admin Overview', href: '/dashboard/admin', icon: '⚡' },
     { name: 'User Management', href: '/dashboard/admin/users', icon: '👥' },
@@ -67,7 +90,7 @@ export default function DashboardLayout({ children }) {
 
   const handleSignOut = () => {
     clearStoredAuth();
-    toast.success('Signed out');
+    toast.success('Signed out successfully');
     router.push('/');
   };
 
@@ -95,7 +118,7 @@ export default function DashboardLayout({ children }) {
         sidebarOpen ? 'translate-x-0' : '-translate-x-full'
       }`}>
         <div>
-          {/* Sidebar Top: User Summary */}
+          {/* Sidebar Top: User Profile Badge */}
           <div className="p-6 border-b border-slate-100 flex items-center space-x-3">
             <img
               src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
@@ -125,7 +148,7 @@ export default function DashboardLayout({ children }) {
             </button>
           </div>
 
-          {/* Nav List */}
+          {/* Navigation Links */}
           <nav className="p-4 space-y-1">
             {currentLinks.map((link) => {
               const active = pathname === link.href;
