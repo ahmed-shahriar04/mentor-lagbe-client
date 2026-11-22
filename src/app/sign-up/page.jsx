@@ -32,13 +32,13 @@ export default function SignUpPage() {
         image: 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop',
       };
 
-      const fakeToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(JSON.stringify({
+      const fakeToken = `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.${btoa(unescape(encodeURIComponent(JSON.stringify({
         email: newUser.email,
         name: newUser.name,
         role: newUser.role,
         plan: 'free',
         exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 7
-      }))}.signature`;
+      }))))}.signature`;
 
       setStoredAuth({
         user: newUser,
