@@ -53,6 +53,23 @@ export default function Navbar() {
     };
 
     syncAuth();
+
+    // Background sync with database to reflect admin role updates immediately
+    const auth = getStoredAuth();
+    if (auth?.token) {
+      api.getCurrentUser()
+        .then((res) => {
+          if (res?.success && res?.data) {
+            const fresh = res.data;
+            if (fresh.role !== auth.user?.role || fresh.plan !== auth.user?.plan) {
+              const updated = { ...auth, user: { ...auth.user, ...fresh } };
+              setStoredAuth(updated);
+            }
+          }
+        })
+        .catch(() => {});
+    }
+
     window.addEventListener('mentorlagbe_auth_change', syncAuth);
     return () => window.removeEventListener('mentorlagbe_auth_change', syncAuth);
   }, []);

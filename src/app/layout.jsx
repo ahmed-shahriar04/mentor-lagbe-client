@@ -13,7 +13,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className="min-h-screen flex flex-col bg-slate-50 text-slate-800 antialiased">
         <Toaster
-          position="top-right"
+          position="bottom-right"
           containerClassName="z-[99999]"
           toastOptions={{
             duration: 4000,

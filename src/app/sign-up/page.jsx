@@ -50,7 +50,7 @@ export default function SignUpPage() {
         token: fakeToken,
       });
 
-      toast.success(`Account created as ${role}!`);
+      toast.success(`Account created as ${role}!`, { id: 'auth-toast' });
 
       if (role === 'tutor') {
         router.push('/dashboard/tutor');

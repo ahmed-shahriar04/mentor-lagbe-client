@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { getStoredAuth, clearStoredAuth } from '@/lib/auth-client';
+import { api } from '@/lib/api';
 import toast from 'react-hot-toast';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
@@ -39,8 +40,43 @@ export default function DashboardLayout({ children }) {
       return;
     }
 
-    const currentUser = auth.user;
+    let currentUser = auth.user;
     setUser(currentUser);
+
+    // Live sync user profile and role from MongoDB in real time
+    async function syncFreshUser() {
+      try {
+        const res = await api.getCurrentUser();
+        if (res?.success && res?.data) {
+          const fresh = res.data;
+          const roleChanged = fresh.role && fresh.role !== currentUser.role;
+          const planChanged = fresh.plan !== currentUser.plan;
+          
+          if (roleChanged || planChanged || fresh.name !== currentUser.name || fresh.image !== currentUser.image) {
+            const updatedAuth = { ...auth, user: { ...currentUser, ...fresh } };
+            setStoredAuth(updatedAuth);
+            setUser(updatedAuth.user);
+            currentUser = updatedAuth.user;
+
+            if (roleChanged) {
+              toast.success(`Role updated: You now have full ${fresh.role.toUpperCase()} privileges!`, {
+                icon: '🎉',
+                duration: 4000,
+              });
+              if (fresh.role === 'tutor' && pathname.includes('/dashboard/student')) {
+                router.push('/dashboard/tutor');
+              } else if (fresh.role === 'student' && pathname.includes('/dashboard/tutor')) {
+                router.push('/dashboard/student');
+              }
+            }
+          }
+        }
+      } catch (err) {
+        // Silently ignore if offline
+      }
+    }
+
+    syncFreshUser();
 
     // Strict Role-Based Route Guard
     if (pathname.startsWith('/dashboard/admin') && currentUser.role !== 'admin') {

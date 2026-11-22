@@ -54,7 +54,7 @@ export default function SignInPage() {
         token: token,
       });
 
-      toast.success(`Welcome back, ${mockUser.name}!`);
+      toast.success(`Welcome back, ${mockUser.name}!`, { id: 'auth-toast' });
 
       if (role === 'admin') router.push('/dashboard/admin');
       else if (role === 'tutor') router.push('/dashboard/tutor');

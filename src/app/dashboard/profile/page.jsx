@@ -31,6 +31,28 @@ export default function ProfilePage() {
       setBio(auth.user.bio || '');
       setImage(auth.user.image || '');
     }
+
+    async function loadFresh() {
+      try {
+        const res = await api.getCurrentUser();
+        if (res?.success && res?.data) {
+          const fresh = res.data;
+          setUser(fresh);
+          setName(fresh.name || '');
+          setPhone(fresh.phone || '');
+          setBio(fresh.bio || '');
+          setImage(fresh.image || '');
+
+          if (auth) {
+            auth.user = { ...auth.user, ...fresh };
+            setStoredAuth(auth);
+          }
+        }
+      } catch (e) {
+        // Continue with cached data if network issue
+      }
+    }
+    loadFresh();
   }, []);
 
   // Challenge 3: Direct file upload via ImgBB API for user profile
@@ -116,6 +138,29 @@ export default function ProfilePage() {
           <p className="text-xs sm:text-sm text-slate-500 mt-1">
             Keep your contact information, phone, and profile photo up-to-date so students and mentors can reach you directly.
           </p>
+
+          {/* Real-time Role & Status Indicators */}
+          <div className="flex flex-wrap items-center gap-2 mt-3 pt-2 border-t border-slate-100">
+            <span className="text-xs font-semibold text-slate-500">Assigned Role:</span>
+            <span className={`px-3 py-0.5 rounded-full text-xs font-extrabold uppercase tracking-wider ${
+              user?.role === 'admin'
+                ? 'bg-purple-100 text-purple-800 border border-purple-200'
+                : user?.role === 'tutor'
+                ? 'bg-emerald-100 text-emerald-800 border border-emerald-200'
+                : 'bg-blue-100 text-blue-800 border border-blue-200'
+            }`}>
+              {user?.role || 'student'}
+            </span>
+            <span className="text-xs text-slate-400">•</span>
+            <span className="text-xs font-semibold text-slate-500">Tier:</span>
+            <span className={`px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase ${
+              user?.plan === 'pro'
+                ? 'bg-amber-100 text-amber-800 border border-amber-200'
+                : 'bg-slate-100 text-slate-600 border border-slate-200'
+            }`}>
+              {user?.plan || 'free'}
+            </span>
+          </div>
         </div>
 
         <form onSubmit={handleSaveProfile} className="space-y-6">
