@@ -5,6 +5,23 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { getStoredAuth, clearStoredAuth } from '@/lib/auth-client';
 import toast from 'react-hot-toast';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  faChartLine,
+  faClipboardList,
+  faBookmark,
+  faUser,
+  faCrown,
+  faPlus,
+  faBook,
+  faUsers,
+  faBolt,
+  faShieldAlt,
+  faCreditCard,
+  faSignOutAlt,
+  faBars,
+  faTimes,
+} from '@fortawesome/free-solid-svg-icons';
 
 export default function DashboardLayout({ children }) {
   const pathname = usePathname();
@@ -14,7 +31,6 @@ export default function DashboardLayout({ children }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // Client-side authentication check
     const auth = getStoredAuth();
     if (!auth || !auth.user) {
       toast.error('Please sign in to access the dashboard');
@@ -26,15 +42,13 @@ export default function DashboardLayout({ children }) {
     const currentUser = auth.user;
     setUser(currentUser);
 
-    // 🔒 Strict Role-Based Route Guard
-    // 1. If trying to access /dashboard/admin without admin role
+    // Strict Role-Based Route Guard
     if (pathname.startsWith('/dashboard/admin') && currentUser.role !== 'admin') {
       toast.error('Forbidden: Admin access required');
       router.push(`/dashboard/${currentUser.role}`);
       return;
     }
 
-    // 2. If trying to access /dashboard/tutor without tutor role (admins allowed)
     if (pathname.startsWith('/dashboard/tutor') && currentUser.role !== 'tutor' && currentUser.role !== 'admin') {
       toast.error('Forbidden: Tutor privileges required');
       router.push('/dashboard/student');
@@ -44,7 +58,6 @@ export default function DashboardLayout({ children }) {
     setLoading(false);
   }, [pathname, router]);
 
-  // Loading skeleton state while verifying role
   if (loading || !user) {
     return (
       <div className="min-h-screen flex flex-col items-center justify-center bg-slate-50">
@@ -58,32 +71,32 @@ export default function DashboardLayout({ children }) {
 
   const role = user.role;
 
-  // Student Navigation Links
+  // Student Navigation Links with FontAwesome Icons
   const studentLinks = [
-    { name: 'Overview', href: '/dashboard/student', icon: '📊' },
-    { name: 'My Applications', href: '/dashboard/student/my-applications', icon: '📝' },
-    { name: 'Saved Tuitions', href: '/dashboard/student/saved-tuitions', icon: '⭐' },
-    { name: 'Update Profile', href: '/dashboard/profile', icon: '👤' },
-    { name: 'Upgrade to Pro', href: '/pricing', icon: '💎' },
+    { name: 'Overview', href: '/dashboard/student', icon: faChartLine },
+    { name: 'My Applications', href: '/dashboard/student/my-applications', icon: faClipboardList },
+    { name: 'Saved Tuitions', href: '/dashboard/student/saved-tuitions', icon: faBookmark },
+    { name: 'Update Profile', href: '/dashboard/profile', icon: faUser },
+    { name: 'Upgrade to Pro', href: '/pricing', icon: faCrown },
   ];
 
-  // Tutor Navigation Links
+  // Tutor Navigation Links with FontAwesome Icons
   const tutorLinks = [
-    { name: 'Overview', href: '/dashboard/tutor', icon: '📊' },
-    { name: 'Post a Tuition', href: '/dashboard/tutor/post-tuition', icon: '➕' },
-    { name: 'My Created Tuitions', href: '/dashboard/tutor/my-tuitions', icon: '📚' },
-    { name: 'Manage Applicants', href: '/dashboard/tutor/applicants', icon: '👥' },
-    { name: 'Update Profile', href: '/dashboard/profile', icon: '👤' },
-    { name: 'Upgrade to Pro', href: '/pricing', icon: '💎' },
+    { name: 'Overview', href: '/dashboard/tutor', icon: faChartLine },
+    { name: 'Post a Tuition', href: '/dashboard/tutor/post-tuition', icon: faPlus },
+    { name: 'My Created Tuitions', href: '/dashboard/tutor/my-tuitions', icon: faBook },
+    { name: 'Manage Applicants', href: '/dashboard/tutor/applicants', icon: faUsers },
+    { name: 'Update Profile', href: '/dashboard/profile', icon: faUser },
+    { name: 'Upgrade to Pro', href: '/pricing', icon: faCrown },
   ];
 
-  // Admin Navigation Links
+  // Admin Navigation Links with FontAwesome Icons
   const adminLinks = [
-    { name: 'Admin Overview', href: '/dashboard/admin', icon: '⚡' },
-    { name: 'User Management', href: '/dashboard/admin/users', icon: '👥' },
-    { name: 'Tuition Moderation', href: '/dashboard/admin/tuitions', icon: '🛡️' },
-    { name: 'Stripe Transactions', href: '/dashboard/admin/transactions', icon: '💳' },
-    { name: 'Update Profile', href: '/dashboard/profile', icon: '👤' },
+    { name: 'Admin Overview', href: '/dashboard/admin', icon: faBolt },
+    { name: 'User Management', href: '/dashboard/admin/users', icon: faUsers },
+    { name: 'Tuition Moderation', href: '/dashboard/admin/tuitions', icon: faShieldAlt },
+    { name: 'Stripe Transactions', href: '/dashboard/admin/transactions', icon: faCreditCard },
+    { name: 'Update Profile', href: '/dashboard/profile', icon: faUser },
   ];
 
   const currentLinks = role === 'admin' ? adminLinks : role === 'tutor' ? tutorLinks : studentLinks;
@@ -107,9 +120,7 @@ export default function DashboardLayout({ children }) {
           onClick={() => setSidebarOpen(!sidebarOpen)}
           className="p-2 text-slate-600 hover:text-slate-900 rounded-lg border border-slate-200"
         >
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16" />
-          </svg>
+          <FontAwesomeIcon icon={sidebarOpen ? faTimes : faBars} className="w-5 h-5" />
         </button>
       </div>
 
@@ -120,11 +131,13 @@ export default function DashboardLayout({ children }) {
         <div>
           {/* Sidebar Top: User Profile Badge */}
           <div className="p-6 border-b border-slate-100 flex items-center space-x-3">
-            <img
-              src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
-              alt={user.name}
-              className="w-11 h-11 rounded-2xl object-cover ring-2 ring-emerald-500/20"
-            />
+            <Link href="/dashboard/profile" title="Edit Profile">
+              <img
+                src={user.image || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?q=80&w=120&auto=format&fit=crop'}
+                alt={user.name}
+                className="w-11 h-11 rounded-2xl object-cover ring-2 ring-emerald-500/20 hover:ring-emerald-500 transition"
+              />
+            </Link>
             <div className="flex-1 min-w-0">
               <h4 className="text-xs font-bold text-slate-900 truncate">{user.name}</h4>
               <div className="flex items-center space-x-1 mt-0.5">
@@ -144,11 +157,11 @@ export default function DashboardLayout({ children }) {
               onClick={() => setSidebarOpen(false)}
               className="md:hidden text-slate-400 hover:text-slate-600"
             >
-              ✕
+              <FontAwesomeIcon icon={faTimes} className="w-4 h-4" />
             </button>
           </div>
 
-          {/* Navigation Links */}
+          {/* Navigation Links with FontAwesome Icons */}
           <nav className="p-4 space-y-1">
             {currentLinks.map((link) => {
               const active = pathname === link.href;
@@ -157,13 +170,13 @@ export default function DashboardLayout({ children }) {
                   key={link.name}
                   href={link.href}
                   onClick={() => setSidebarOpen(false)}
-                  className={`flex items-center px-3.5 py-2.5 rounded-xl text-xs font-medium transition ${
+                  className={`flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold transition ${
                     active
                       ? 'bg-emerald-50 text-emerald-800 font-bold border border-emerald-200/60'
                       : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'
                   }`}
                 >
-                  <span className="mr-3 text-base">{link.icon}</span>
+                  <FontAwesomeIcon icon={link.icon} className={`w-4 h-4 mr-3 shrink-0 ${active ? 'text-emerald-600' : 'text-slate-400'}`} />
                   <span>{link.name}</span>
                 </Link>
               );
@@ -177,8 +190,8 @@ export default function DashboardLayout({ children }) {
             onClick={handleSignOut}
             className="w-full flex items-center px-3.5 py-2.5 rounded-xl text-xs font-semibold text-red-600 hover:bg-red-50 transition text-left"
           >
-            <span className="mr-3 text-base">🚪</span>
-            Sign Out
+            <FontAwesomeIcon icon={faSignOutAlt} className="w-4 h-4 mr-3 text-red-500" />
+            <span>Sign Out</span>
           </button>
         </div>
       </aside>

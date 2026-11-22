@@ -1,5 +1,9 @@
 'use client';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faUsers, faShieldAlt, faCreditCard } from '@fortawesome/free-solid-svg-icons';
+
+
 import { useState, useEffect } from 'react';
 import { api } from '@/lib/api';
 import Link from 'next/link';
@@ -71,7 +75,7 @@ export default function AdminOverviewPage() {
           href="/dashboard/admin/users"
           className="p-6 bg-white rounded-2xl border border-slate-200 hover:border-purple-300 transition shadow-sm group"
         >
-          <span className="text-2xl">👥</span>
+          <div className="w-10 h-10 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center"><FontAwesomeIcon icon={faUsers} className="w-5 h-5" /></div>
           <h4 className="text-base font-bold text-slate-900 font-heading mt-2 group-hover:text-purple-600">
             User Management
           </h4>
@@ -81,7 +85,7 @@ export default function AdminOverviewPage() {
           href="/dashboard/admin/tuitions"
           className="p-6 bg-white rounded-2xl border border-slate-200 hover:border-emerald-300 transition shadow-sm group"
         >
-          <span className="text-2xl">🛡️</span>
+          <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center"><FontAwesomeIcon icon={faShieldAlt} className="w-5 h-5" /></div>
           <h4 className="text-base font-bold text-slate-900 font-heading mt-2 group-hover:text-emerald-600">
             Tuition Moderation
           </h4>
@@ -91,7 +95,7 @@ export default function AdminOverviewPage() {
           href="/dashboard/admin/transactions"
           className="p-6 bg-white rounded-2xl border border-slate-200 hover:border-blue-300 transition shadow-sm group"
         >
-          <span className="text-2xl">💳</span>
+          <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center"><FontAwesomeIcon icon={faCreditCard} className="w-5 h-5" /></div>
           <h4 className="text-base font-bold text-slate-900 font-heading mt-2 group-hover:text-blue-600">
             Stripe Transactions
           </h4>
