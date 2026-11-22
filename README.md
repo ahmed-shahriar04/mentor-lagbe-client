@@ -71,7 +71,35 @@ NEXT_PUBLIC_IMGBB_API_KEY=your_imgbb_api_key_here
 NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_...
 BETTER_AUTH_SECRET=super_secret_better_auth_session_key
 BETTER_AUTH_URL=http://localhost:3000
+
+# Google OAuth 2.0 Credentials (Required on Client for Google Login)
+NEXT_PUBLIC_GOOGLE_CLIENT_ID=your_google_client_id_here.apps.googleusercontent.com
+GOOGLE_CLIENT_ID=your_google_client_id_here.apps.googleusercontent.com
+GOOGLE_CLIENT_SECRET=GOCSPX-your_google_client_secret_here
 ```
+
+---
+
+## 🔑 Google OAuth 2.0 Setup Guide
+To enable the official **Continue with Google** login flow:
+
+1. Go to [Google Cloud Console Credentials](https://console.cloud.google.com/apis/credentials).
+2. Click **Create Credentials** -> **OAuth client ID**.
+3. Choose Application Type: **Web application**.
+4. Set **Authorized JavaScript origins**:
+   - `http://localhost:3000`
+   - `https://mentor-lagbe-naki.vercel.app`
+5. Set **Authorized redirect URIs**:
+   - `http://localhost:3000/auth/callback`
+   - `https://mentor-lagbe-naki.vercel.app/auth/callback`
+6. Copy the generated **Client ID** and **Client Secret**:
+   - In `client/.env.local` (and Vercel Environment Variables), set:
+     - `NEXT_PUBLIC_GOOGLE_CLIENT_ID=<your_client_id>` (Client side redirect)
+     - `GOOGLE_CLIENT_ID=<your_client_id>`
+     - `GOOGLE_CLIENT_SECRET=<your_client_secret>`
+   - The Express server does **not** need the Secret; it is strictly managed on the Client / Next.js backend!
+
+---
 
 ---
 
