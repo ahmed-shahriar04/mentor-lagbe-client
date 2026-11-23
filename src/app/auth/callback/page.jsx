@@ -90,7 +90,7 @@ export default function GoogleOAuthCallback() {
         let plan = 'free';
 
         try {
-          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+          const apiUrl = process.env.NEXT_PUBLIC_API_URL || 'https://mentor-lagbe-server-xi.vercel.app/api';
           const loginRes = await fetch(`${apiUrl}/users/login`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

@@ -1,6 +1,6 @@
 import { getStoredAuth } from './auth-client';
 
-const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api';
+const API_BASE = process.env.NEXT_PUBLIC_API_URL || 'https://mentor-lagbe-server-xi.vercel.app/api';
 
 /**
  * Universal API fetcher with automatic JWT Authorization header
