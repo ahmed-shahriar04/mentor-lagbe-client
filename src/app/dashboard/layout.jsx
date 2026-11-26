@@ -167,11 +167,21 @@ export default function DashboardLayout({ children }) {
         </button>
       </div>
 
-      {/* Sidebar Navigation */}
-      <aside className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-300 md:static md:translate-x-0 ${
-        sidebarOpen ? 'translate-x-0' : '-translate-x-full'
-      }`}>
-        <div>
+      {/* Mobile Drawer Backdrop */}
+      {sidebarOpen && (
+        <div
+          onClick={() => setSidebarOpen(false)}
+          className="fixed inset-0 bg-slate-900/40 backdrop-blur-sm z-30 md:hidden"
+        />
+      )}
+
+      {/* Sidebar Navigation (Sticky on desktop, never slides away) */}
+      <aside
+        className={`fixed inset-y-0 left-0 z-40 w-64 bg-white border-r border-slate-200 flex flex-col justify-between transition-transform duration-300 md:sticky md:top-16 md:h-[calc(100vh-4rem)] md:self-start md:shrink-0 md:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'
+        }`}
+      >
+        <div className="flex-1 overflow-y-auto">
           {/* Sidebar Top: User Profile Badge */}
           <div className="p-6 border-b border-slate-100 flex items-center space-x-3">
             <Link href="/dashboard/profile" title="Edit Profile" className="relative shrink-0">
@@ -253,7 +263,7 @@ export default function DashboardLayout({ children }) {
         </div>
 
         {/* Sidebar Bottom: Highlighted Sign Out Button */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="p-4 border-t border-slate-100 bg-slate-50/50 shrink-0">
           <button
             type="button"
             onClick={handleSignOut}

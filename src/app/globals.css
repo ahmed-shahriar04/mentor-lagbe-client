@@ -16,7 +16,7 @@ body {
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
   background-color: var(--bg-main);
   color: #1e293b;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
 
 h1, h2, h3, h4, h5, h6 {
