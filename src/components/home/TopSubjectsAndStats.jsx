@@ -1,7 +1,9 @@
 'use client';
 
+import { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { api } from '@/lib/api';
 import {
   faCalculator,
   faAtom,
@@ -12,13 +14,36 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 
 export default function TopSubjectsAndStats() {
+  const [subjectCounts, setSubjectCounts] = useState({
+    'Higher Mathematics': 2,
+    'Physics (Board & Admission)': 1,
+    'IELTS & Spoken English': 3,
+    'ICT & Programming': 3,
+    'Chemistry & Biology': 3,
+    'Accounting & Commerce': 1,
+  });
+
+  useEffect(() => {
+    async function loadSubjectStats() {
+      try {
+        const res = await api.getPlatformStats();
+        if (res?.success && res?.data?.subjects) {
+          setSubjectCounts(res.data.subjects);
+        }
+      } catch (err) {
+        // Fallback silently if offline
+      }
+    }
+    loadSubjectStats();
+  }, []);
+
   const subjects = [
-    { name: 'Higher Mathematics', count: '140+ Batches', icon: faCalculator, color: 'text-blue-600 bg-blue-50', href: '/tuitions?subject=Higher+Mathematics' },
-    { name: 'Physics (Board & Admission)', count: '110+ Batches', icon: faAtom, color: 'text-purple-600 bg-purple-50', href: '/tuitions?subject=Physics' },
-    { name: 'IELTS & Spoken English', count: '95+ Batches', icon: faComments, color: 'text-amber-600 bg-amber-50', href: '/tuitions?subject=IELTS' },
-    { name: 'ICT & Programming', count: '75+ Batches', icon: faCode, color: 'text-emerald-600 bg-emerald-50', href: '/tuitions?subject=ICT+%26+Programming' },
-    { name: 'Chemistry & Biology', count: '120+ Batches', icon: faFlask, color: 'text-rose-600 bg-rose-50', href: '/tuitions?subject=Chemistry' },
-    { name: 'Accounting & Commerce', count: '50+ Batches', icon: faChartBar, color: 'text-indigo-600 bg-indigo-50', href: '/tuitions?subject=Accounting' },
+    { name: 'Higher Mathematics', fallbackCount: 'Browse Batches', icon: faCalculator, color: 'text-blue-600 bg-blue-50', href: '/tuitions?subject=Higher+Mathematics' },
+    { name: 'Physics (Board & Admission)', fallbackCount: 'Browse Batches', icon: faAtom, color: 'text-purple-600 bg-purple-50', href: '/tuitions?subject=Physics' },
+    { name: 'IELTS & Spoken English', fallbackCount: 'Browse Batches', icon: faComments, color: 'text-amber-600 bg-amber-50', href: '/tuitions?subject=IELTS' },
+    { name: 'ICT & Programming', fallbackCount: 'Browse Batches', icon: faCode, color: 'text-emerald-600 bg-emerald-50', href: '/tuitions?subject=ICT+%26+Programming' },
+    { name: 'Chemistry & Biology', fallbackCount: 'Browse Batches', icon: faFlask, color: 'text-rose-600 bg-rose-50', href: '/tuitions?subject=Chemistry' },
+    { name: 'Accounting & Commerce', fallbackCount: 'Browse Batches', icon: faChartBar, color: 'text-indigo-600 bg-indigo-50', href: '/tuitions?subject=Accounting' },
   ];
 
   const testimonials = [
@@ -76,7 +101,11 @@ export default function TopSubjectsAndStats() {
               <h4 className="text-xs font-bold text-slate-800 font-heading group-hover:text-emerald-700">
                 {sub.name}
               </h4>
-              <p className="text-[10px] text-slate-400 mt-1">{sub.count}</p>
+              <p className="text-[10px] text-emerald-700 font-semibold mt-1.5 bg-emerald-50 px-2 py-0.5 rounded-full border border-emerald-100/80 inline-block">
+                {subjectCounts[sub.name] !== undefined
+                  ? `${subjectCounts[sub.name]} ${subjectCounts[sub.name] === 1 ? 'Active Batch' : 'Active Batches'}`
+                  : sub.fallbackCount}
+              </p>
             </motion.a>
           ))}
         </div>

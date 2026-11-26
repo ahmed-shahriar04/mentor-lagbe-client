@@ -74,6 +74,11 @@ export default function Footer() {
             </h4>
             <ul className="space-y-2.5 text-sm">
               <li>
+                <Link href="/about" className="hover:text-emerald-400 transition">
+                  About Us
+                </Link>
+              </li>
+              <li>
                 <Link href="/tuitions" className="hover:text-emerald-400 transition">
                   Browse All Tuitions
                 </Link>
@@ -86,6 +91,11 @@ export default function Footer() {
               <li>
                 <Link href="/how-it-works" className="hover:text-emerald-400 transition">
                   How It Works
+                </Link>
+              </li>
+              <li>
+                <Link href="/contact" className="hover:text-emerald-400 transition">
+                  Contact & Support
                 </Link>
               </li>
               <li>
@@ -150,6 +160,15 @@ export default function Footer() {
                 </svg>
                 +880 1700-000000 (Hotline)
               </p>
+              <div className="pt-2">
+                <Link
+                  href="/contact"
+                  className="inline-flex items-center space-x-1.5 text-xs font-semibold text-emerald-400 hover:text-emerald-300 transition"
+                >
+                  <span>Get in touch / Support</span>
+                  <span>&rarr;</span>
+                </Link>
+              </div>
             </div>
           </div>
         </div>
