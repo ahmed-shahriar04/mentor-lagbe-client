@@ -7,7 +7,7 @@ import {
   faUserGraduate,
   faChalkboardTeacher,
   faCreditCard,
-  faShieldCheck,
+  faShieldAlt,
   faComments,
   faCheckCircle,
   faArrowRight,
@@ -59,7 +59,7 @@ export default function HowItWorksPage() {
       step: '03',
       title: 'Admin Verification & Go-Live',
       desc: 'Our academic administrators verify listings for quality and authenticity before publishing them publicly on the portal.',
-      icon: faShieldCheck,
+      icon: faShieldAlt,
     },
     {
       step: '04',

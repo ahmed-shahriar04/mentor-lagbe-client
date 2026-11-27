@@ -9,6 +9,9 @@ const nextConfig = {
       'avatars.githubusercontent.com'
     ],
   },
+  experimental: {
+    agentUpgrade: 'security',
+  },
 };
 
 export default nextConfig;
